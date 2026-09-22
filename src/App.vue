@@ -91,9 +91,10 @@ const isAdmin = computed(() => route.meta.admin === true);
             <ul class="footer-nav">
               <li><RouterLink to="/">Accueil</RouterLink></li>
               <li><RouterLink to="/voitures">Tous les véhicules</RouterLink></li>
-              <li><a href="/#marques">Marques disponibles</a></li>
-              <li><a href="/#services">Services & Importation</a></li>
-              <li><a href="/#comment-commander">Processus d'achat</a></li>
+              <li><RouterLink to="/marques">Marques partenaires</RouterLink></li>
+              <li><RouterLink to="/services">Services & Importation</RouterLink></li>
+              <li><RouterLink to="/a-propos">À propos de l'entreprise</RouterLink></li>
+              <li><RouterLink to="/contact">Contact & Showroom</RouterLink></li>
             </ul>
           </div>
 
@@ -101,11 +102,11 @@ const isAdmin = computed(() => route.meta.admin === true);
           <div class="footer-col">
             <h4 class="col-title">Nos Services</h4>
             <ul class="footer-nav">
-              <li><RouterLink to="/voitures">Vente de stock disponible</RouterLink></li>
-              <li><a href="/#services">Importation sur commande</a></li>
-              <li><a href="/#services">Dédouanement et transit</a></li>
-              <li><a href="/#services">Contrôle technique pré-départ</a></li>
-              <li><a href="/#services">Accompagnement administratif</a></li>
+              <li><RouterLink to="/voitures">Vente de véhicules en stock</RouterLink></li>
+              <li><RouterLink to="/services">Importation directe sur-mesure</RouterLink></li>
+              <li><RouterLink to="/services">Dédouanement et transit</RouterLink></li>
+              <li><RouterLink to="/services">Contrôle technique pré-départ</RouterLink></li>
+              <li><RouterLink to="/services">Accompagnement clé en main</RouterLink></li>
             </ul>
           </div>
 

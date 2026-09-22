@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { RouterLink, RouterView, useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import {
+  LayoutDashboard,
   Car,
   ClipboardList,
   Sliders,
@@ -36,6 +37,7 @@ function closeSidebar() {
 
 const pageTitle = computed(() => {
   const path = route.path;
+  if (path.includes("/admin/dashboard")) return "Tableau de Bord & Activité";
   if (path.includes("/admin/voitures")) return "Gestion du Parc Automobile";
   if (path.includes("/admin/commandes")) return "Suivi des Commandes & Demandes";
   if (path.includes("/admin/accueil")) return "Paramètres du Site & Coordonnées";
@@ -71,6 +73,18 @@ const pageTitle = computed(() => {
 
       <!-- Navigation Principale Admin -->
       <nav class="sidebar-nav" aria-label="Menu administration">
+        <div class="nav-section-label">Pilotage</div>
+
+        <RouterLink
+          to="/admin/dashboard"
+          class="nav-item"
+          active-class="nav-item-active"
+          @click="closeSidebar"
+        >
+          <LayoutDashboard :size="18" class="item-icon" />
+          <span>Tableau de bord</span>
+        </RouterLink>
+
         <div class="nav-section-label">Véhicules & Ventes</div>
 
         <RouterLink

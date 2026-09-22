@@ -90,10 +90,18 @@ onUnmounted(() => {
           <RouterLink to="/voitures" class="nav-link" active-class="nav-link-active">
             Véhicules
           </RouterLink>
-          <a href="/#marques" class="nav-link">Marques</a>
-          <a href="/#services" class="nav-link">Services</a>
-          <a href="/#a-propos" class="nav-link">À propos</a>
-          <a href="/#contact" class="nav-link">Contact</a>
+          <RouterLink to="/marques" class="nav-link" active-class="nav-link-active">
+            Marques
+          </RouterLink>
+          <RouterLink to="/services" class="nav-link" active-class="nav-link-active">
+            Services
+          </RouterLink>
+          <RouterLink to="/a-propos" class="nav-link" active-class="nav-link-active">
+            À propos
+          </RouterLink>
+          <RouterLink to="/contact" class="nav-link" active-class="nav-link-active">
+            Contact
+          </RouterLink>
         </nav>
 
         <!-- Actions Desktop -->
@@ -181,29 +189,37 @@ onUnmounted(() => {
               <ChevronRight :size="16" class="link-arrow" />
             </RouterLink>
 
-            <a href="/#marques" class="drawer-link" @click="closeMenu">
+            <RouterLink to="/marques" class="drawer-link" @click="closeMenu">
               <div class="link-label">
                 <Tag :size="18" />
                 <span>Nos Marques</span>
               </div>
               <ChevronRight :size="16" class="link-arrow" />
-            </a>
+            </RouterLink>
 
-            <a href="/#services" class="drawer-link" @click="closeMenu">
+            <RouterLink to="/services" class="drawer-link" @click="closeMenu">
               <div class="link-label">
                 <Wrench :size="18" />
                 <span>Services & Import</span>
               </div>
               <ChevronRight :size="16" class="link-arrow" />
-            </a>
+            </RouterLink>
 
-            <a href="/#a-propos" class="drawer-link" @click="closeMenu">
+            <RouterLink to="/a-propos" class="drawer-link" @click="closeMenu">
               <div class="link-label">
                 <Info :size="18" />
                 <span>À propos de l'entreprise</span>
               </div>
               <ChevronRight :size="16" class="link-arrow" />
-            </a>
+            </RouterLink>
+
+            <RouterLink to="/contact" class="drawer-link" @click="closeMenu">
+              <div class="link-label">
+                <Phone :size="18" />
+                <span>Contactez-nous</span>
+              </div>
+              <ChevronRight :size="16" class="link-arrow" />
+            </RouterLink>
           </nav>
 
           <div class="drawer-footer">
