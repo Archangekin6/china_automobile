@@ -1,6 +1,13 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { Gauge, Fuel, Cog, ArrowRight, ShieldCheck, Star } from "lucide-vue-next";
+import {
+  Gauge,
+  Fuel,
+  Cog,
+  ArrowRight,
+  ShieldCheck,
+  Star,
+} from "lucide-vue-next";
 
 defineProps({
   car: { type: Object, required: true },
@@ -27,12 +34,8 @@ const formatPrice = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 
       <!-- Badges Statuts -->
       <div class="badges-overlay">
-        <span v-if="!car.available" class="badge badge-sold">
-          Vendu
-        </span>
-        <span v-else class="badge badge-available">
-          Disponible
-        </span>
+        <span v-if="!car.available" class="badge badge-sold"> Vendu </span>
+        <span v-else class="badge badge-available"> Disponible </span>
 
         <span v-if="car.featured" class="badge badge-featured">
           <Star :size="11" fill="currentColor" />
@@ -63,7 +66,11 @@ const formatPrice = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 
       <!-- Spécifications techniques -->
       <div class="specs-grid">
-        <div v-if="car.transmission" class="spec-item" title="Boîte de vitesses">
+        <div
+          v-if="car.transmission"
+          class="spec-item"
+          title="Boîte de vitesses"
+        >
           <Cog :size="14" class="spec-icon" />
           <span>{{ car.transmission }}</span>
         </div>
@@ -73,7 +80,11 @@ const formatPrice = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
           <span>{{ car.fuel }}</span>
         </div>
 
-        <div v-if="car.mileage !== undefined && car.mileage !== null" class="spec-item" title="Kilométrage">
+        <div
+          v-if="car.mileage !== undefined && car.mileage !== null"
+          class="spec-item"
+          title="Kilométrage"
+        >
           <Gauge :size="14" class="spec-icon" />
           <span>{{ formatNumber(car.mileage) }} km</span>
         </div>
