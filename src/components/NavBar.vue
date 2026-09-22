@@ -50,22 +50,6 @@ onUnmounted(() => {
 <template>
   <header class="header" :class="{ scrolled: isScrolled }">
     <!-- Barre supérieure discrète -->
-    <div class="top-announcement">
-      <div class="container top-bar-content">
-        <div class="top-left">
-          <span class="badge-dot"></span>
-          <span>Spécialiste de l'importation & vente de véhicules neufs et récents de Chine</span>
-        </div>
-        <div class="top-right">
-          <a :href="site.phoneHref" class="top-link">
-            <Phone :size="13" class="icon-accent" />
-            <span>{{ site.settings.phone }}</span>
-          </a>
-          <span class="top-divider">|</span>
-          <span class="top-location">{{ site.settings.address }}</span>
-        </div>
-      </div>
-    </div>
 
     <!-- Barre principale de navigation -->
     <div class="navbar-main">
@@ -84,29 +68,58 @@ onUnmounted(() => {
 
         <!-- Liens Desktop -->
         <nav class="desktop-nav" aria-label="Navigation principale">
-          <RouterLink to="/" class="nav-link" active-class="nav-link-active" exact>
+          <RouterLink
+            to="/"
+            class="nav-link"
+            active-class="nav-link-active"
+            exact
+          >
             Accueil
           </RouterLink>
-          <RouterLink to="/voitures" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/voitures"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Véhicules
           </RouterLink>
-          <RouterLink to="/marques" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/marques"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Marques
           </RouterLink>
-          <RouterLink to="/services" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/services"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Services
           </RouterLink>
-          <RouterLink to="/a-propos" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/a-propos"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             À propos
           </RouterLink>
-          <RouterLink to="/contact" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/contact"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Contact
           </RouterLink>
         </nav>
 
         <!-- Actions Desktop -->
         <div class="nav-actions">
-          <a :href="site.phoneHref" class="phone-cta" title="Nous contacter par téléphone">
+          <a
+            :href="site.phoneHref"
+            class="phone-cta"
+            title="Nous contacter par téléphone"
+          >
             <div class="phone-icon-wrap">
               <Phone :size="16" />
             </div>
@@ -117,7 +130,11 @@ onUnmounted(() => {
           </a>
 
           <a
-            :href="site.waLink('Bonjour, je souhaite être conseillé pour l\'achat d\'un véhicule.')"
+            :href="
+              site.waLink(
+                'Bonjour, je souhaite être conseillé pour l\'achat d\'un véhicule.',
+              )
+            "
             target="_blank"
             rel="noopener"
             class="btn btn-sm btn-whatsapp wa-quick-btn"
@@ -150,7 +167,12 @@ onUnmounted(() => {
     ></div>
 
     <transition name="drawer">
-      <div v-if="isMenuOpen" class="mobile-drawer" role="dialog" aria-label="Menu principal">
+      <div
+        v-if="isMenuOpen"
+        class="mobile-drawer"
+        role="dialog"
+        aria-label="Menu principal"
+      >
         <div class="drawer-header">
           <div class="logo">
             <div class="logo-symbol" aria-hidden="true">
@@ -232,7 +254,11 @@ onUnmounted(() => {
             </a>
 
             <a
-              :href="site.waLink('Bonjour, je souhaite des informations sur vos véhicules.')"
+              :href="
+                site.waLink(
+                  'Bonjour, je souhaite des informations sur vos véhicules.',
+                )
+              "
               target="_blank"
               rel="noopener"
               class="btn btn-whatsapp w-full"
@@ -254,7 +280,9 @@ onUnmounted(() => {
   z-index: 50;
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-slate-200);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .header.scrolled {
