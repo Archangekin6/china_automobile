@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://china-automobile-xrp9.onrender.com/sitemap.xml
