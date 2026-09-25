@@ -39,7 +39,9 @@ const isAdmin = computed(() => route.meta.admin === true);
             </div>
             <div>
               <h4 class="reassurance-title">Inspection Certifiée</h4>
-              <p class="reassurance-desc">Véhicules vérifiés avant expédition depuis la Chine.</p>
+              <p class="reassurance-desc">
+                Informations claires sur les modèles proposés.
+              </p>
             </div>
           </div>
 
@@ -48,8 +50,10 @@ const isAdmin = computed(() => route.meta.admin === true);
               <Car :size="24" />
             </div>
             <div>
-              <h4 class="reassurance-title">Clé en Main à Abidjan</h4>
-              <p class="reassurance-desc">Prise en charge du dédouanement et de l'immatriculation.</p>
+              <h4 class="reassurance-title">Vente en Côte d'Ivoire</h4>
+              <p class="reassurance-desc">
+                Découvrez les véhicules proposés par China Automobile.
+              </p>
             </div>
           </div>
 
@@ -59,7 +63,9 @@ const isAdmin = computed(() => route.meta.admin === true);
             </div>
             <div>
               <h4 class="reassurance-title">Accompagnement Dédié</h4>
-              <p class="reassurance-desc">Conseillers disponibles pour le suivi de votre commande.</p>
+              <p class="reassurance-desc">
+                Une équipe disponible pour vos questions commerciales.
+              </p>
             </div>
           </div>
         </div>
@@ -78,7 +84,8 @@ const isAdmin = computed(() => route.meta.admin === true);
               <span class="brand-title">CHINA AUTOMOBILE</span>
             </div>
             <p class="brand-desc">
-              Votre partenaire de référence pour l'achat et l'importation directe de véhicules neufs et occasions récentes des meilleurs constructeurs chinois vers la Côte d'Ivoire.
+              Votre partenaire automobile pour découvrir et acheter des
+              véhicules de marques chinoises en Côte d'Ivoire.
             </p>
             <div class="badges-row">
               <span class="country-badge">Abidjan, Côte d'Ivoire</span>
@@ -90,10 +97,18 @@ const isAdmin = computed(() => route.meta.admin === true);
             <h4 class="col-title">Navigation</h4>
             <ul class="footer-nav">
               <li><RouterLink to="/">Accueil</RouterLink></li>
-              <li><RouterLink to="/voitures">Tous les véhicules</RouterLink></li>
-              <li><RouterLink to="/marques">Marques partenaires</RouterLink></li>
-              <li><RouterLink to="/services">Services & Importation</RouterLink></li>
-              <li><RouterLink to="/a-propos">À propos de l'entreprise</RouterLink></li>
+              <li>
+                <RouterLink to="/voitures">Tous les véhicules</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/marques">Marques partenaires</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/services">Véhicules & Informations</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/a-propos">À propos de l'entreprise</RouterLink>
+              </li>
               <li><RouterLink to="/contact">Contact & Showroom</RouterLink></li>
             </ul>
           </div>
@@ -102,11 +117,27 @@ const isAdmin = computed(() => route.meta.admin === true);
           <div class="footer-col">
             <h4 class="col-title">Nos Services</h4>
             <ul class="footer-nav">
-              <li><RouterLink to="/voitures">Vente de véhicules en stock</RouterLink></li>
-              <li><RouterLink to="/services">Importation directe sur-mesure</RouterLink></li>
-              <li><RouterLink to="/services">Dédouanement et transit</RouterLink></li>
-              <li><RouterLink to="/services">Contrôle technique pré-départ</RouterLink></li>
-              <li><RouterLink to="/services">Accompagnement clé en main</RouterLink></li>
+              <li>
+                <RouterLink to="/voitures"
+                  >Vente de véhicules en stock</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink to="/services"
+                  >Caractéristiques des modèles</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink to="/services">Prix et disponibilités</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/services">Conseil avant achat</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/services"
+                  >Visite et contact commercial</RouterLink
+                >
+              </li>
             </ul>
           </div>
 
@@ -114,13 +145,22 @@ const isAdmin = computed(() => route.meta.admin === true);
           <div class="footer-col contact-col">
             <h4 class="col-title">Coordonnées</h4>
             <div class="contact-entries">
-              <a :href="site.phoneHref" class="contact-entry">
+              <a
+                v-if="site.hasPhone"
+                :href="site.phoneHref"
+                class="contact-entry"
+              >
                 <Phone :size="16" class="contact-icon" />
                 <span>{{ site.settings.phone }}</span>
               </a>
 
               <a
-                :href="site.waLink('Bonjour, je souhaite contacter China Automobile.')"
+                v-if="site.hasWhatsApp"
+                :href="
+                  site.waLink(
+                    'Bonjour, je souhaite contacter China Automobile.',
+                  )
+                "
                 target="_blank"
                 rel="noopener"
                 class="contact-entry"
@@ -128,6 +168,13 @@ const isAdmin = computed(() => route.meta.admin === true);
                 <MessageCircle :size="16" class="contact-icon text-wa" />
                 <span>Discussion WhatsApp</span>
               </a>
+
+              <div
+                v-if="!site.hasPhone && !site.hasWhatsApp"
+                class="contact-entry"
+              >
+                <span>Coordonnées commerciales en cours de configuration.</span>
+              </div>
 
               <div class="contact-entry address-entry">
                 <MapPin :size="16" class="contact-icon" />
@@ -147,11 +194,18 @@ const isAdmin = computed(() => route.meta.admin === true);
       <div class="footer-bottom">
         <div class="container footer-bottom-inner">
           <p class="copyright">
-            © {{ new Date().getFullYear() }} China Automobile. Tous droits réservés.
+            © {{ new Date().getFullYear() }} China Automobile. Tous droits
+            réservés.
           </p>
           <div class="bottom-links">
-            <span class="legal-mention">Conformité commerciale & automobile Côte d'Ivoire</span>
-            <RouterLink to="/admin/login" class="admin-link" title="Espace d'administration">
+            <span class="legal-mention"
+              >Conformité commerciale & automobile Côte d'Ivoire</span
+            >
+            <RouterLink
+              to="/admin/login"
+              class="admin-link"
+              title="Espace d'administration"
+            >
               <Lock :size="12" />
               <span>Accès réservé</span>
             </RouterLink>

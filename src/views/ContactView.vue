@@ -2,7 +2,11 @@
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { supabase } from "@/lib/supabase";
-import { useSiteStore } from "@/stores/site";
+import {
+  isValidPhoneNumber,
+  normalizePhoneNumber,
+  useSiteStore,
+} from "@/stores/site";
 import {
   Phone,
   MessageCircle,
@@ -32,8 +36,18 @@ const errorMsg = ref("");
 
 async function submitMessage() {
   errorMsg.value = "";
-  if (!form.value.name.trim() || !form.value.phone.trim() || !form.value.message.trim()) {
-    errorMsg.value = "Veuillez renseigner votre nom, votre numéro de téléphone et votre message.";
+  if (
+    !form.value.name.trim() ||
+    !form.value.phone.trim() ||
+    !form.value.message.trim()
+  ) {
+    errorMsg.value =
+      "Veuillez renseigner votre nom, votre numéro de téléphone et votre message.";
+    return;
+  }
+  if (!isValidPhoneNumber(form.value.phone)) {
+    errorMsg.value =
+      "Veuillez saisir un numéro ivoirien valide, par exemple +225 07 00 00 00 00.";
     return;
   }
 
@@ -42,7 +56,7 @@ async function submitMessage() {
     const fullMessage = `[Objet : ${form.value.subject}] ${form.value.message.trim()}`;
     const { error } = await supabase.from("orders").insert({
       customer_name: form.value.name.trim(),
-      phone: form.value.phone.trim(),
+      phone: normalizePhoneNumber(form.value.phone),
       email: form.value.email ? form.value.email.trim() : null,
       message: fullMessage,
       status: "nouveau",
@@ -52,7 +66,8 @@ async function submitMessage() {
     sent.value = true;
   } catch (err) {
     console.error("Erreur lors de l'envoi du message :", err);
-    errorMsg.value = "Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous joindre sur WhatsApp.";
+    errorMsg.value =
+      "Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous joindre sur WhatsApp.";
   } finally {
     sending.value = false;
   }
@@ -76,7 +91,8 @@ async function submitMessage() {
         </div>
         <h1 class="page-title">Contactez Notre Équipe à Abidjan</h1>
         <p class="page-lead">
-          Une question sur un modèle, envie de visiter notre parc ou besoin d'un devis ferme pour une importation directe de Chine ? Nous vous répondons rapidement.
+          Une question sur un modèle, son prix, sa disponibilité ou besoin d'un
+          devis commercial ? Contactez directement notre équipe.
         </p>
       </div>
     </header>
@@ -87,10 +103,17 @@ async function submitMessage() {
         <div class="contact-info-col">
           <div class="info-card">
             <h3>Nos Canaux Directs</h3>
-            <p class="info-subtitle">Échangez avec nos conseillers commerciaux pour un accompagnement personnalisé.</p>
+            <p class="info-subtitle">
+              Échangez avec nos conseillers commerciaux pour un accompagnement
+              personnalisé.
+            </p>
 
             <div class="channels-list">
-              <a :href="site.phoneHref" class="channel-item">
+              <a
+                v-if="site.hasPhone"
+                :href="site.phoneHref"
+                class="channel-item"
+              >
                 <div class="channel-icon bg-brand">
                   <Phone :size="20" />
                 </div>
@@ -100,8 +123,23 @@ async function submitMessage() {
                 </div>
               </a>
 
+              <div v-else class="channel-item non-link">
+                <div class="channel-icon bg-slate">
+                  <Phone :size="20" />
+                </div>
+                <div>
+                  <span class="channel-label">Téléphone</span>
+                  <strong class="channel-val">Coordonnée non renseignée</strong>
+                </div>
+              </div>
+
               <a
-                :href="site.waLink('Bonjour China Automobile, je souhaite entrer en contact avec un conseiller.')"
+                v-if="site.hasWhatsApp"
+                :href="
+                  site.waLink(
+                    'Bonjour China Automobile, je souhaite entrer en contact avec un conseiller.',
+                  )
+                "
                 target="_blank"
                 rel="noopener"
                 class="channel-item"
@@ -115,13 +153,25 @@ async function submitMessage() {
                 </div>
               </a>
 
+              <div v-else class="channel-item non-link">
+                <div class="channel-icon bg-slate">
+                  <MessageCircle :size="20" />
+                </div>
+                <div>
+                  <span class="channel-label">WhatsApp</span>
+                  <strong class="channel-val">Coordonnée non renseignée</strong>
+                </div>
+              </div>
+
               <div class="channel-item non-link">
                 <div class="channel-icon bg-slate">
                   <MapPin :size="20" />
                 </div>
                 <div>
                   <span class="channel-label">Showroom & Parc Automobile</span>
-                  <strong class="channel-val">{{ site.settings.address }}</strong>
+                  <strong class="channel-val">{{
+                    site.settings.address
+                  }}</strong>
                   <span class="channel-hint">Abidjan, Côte d'Ivoire</span>
                 </div>
               </div>
@@ -152,7 +202,9 @@ async function submitMessage() {
 
             <div class="security-note">
               <ShieldCheck :size="16" class="text-success" />
-              <span>Visites et essais de véhicules sur rendez-vous sécurisé.</span>
+              <span
+                >Visites et essais de véhicules sur rendez-vous sécurisé.</span
+              >
             </div>
           </div>
         </div>
@@ -162,7 +214,10 @@ async function submitMessage() {
           <div class="form-container-card">
             <div class="form-head">
               <h2>Envoyez-Nous un Message</h2>
-              <p>Remplissez ce formulaire et notre équipe commerciale vous recontactera sous 24 heures ouvrées.</p>
+              <p>
+                Remplissez ce formulaire et notre équipe commerciale vous
+                recontactera sous 24 heures ouvrées.
+              </p>
             </div>
 
             <div v-if="sent" class="success-box">
@@ -171,9 +226,17 @@ async function submitMessage() {
               </div>
               <h3>Message transmis avec succès</h3>
               <p>
-                Merci <strong>{{ form.name }}</strong>. Votre demande a bien été enregistrée. Notre conseiller commercial vous contactera rapidement au numéro <strong>{{ form.phone }}</strong>.
+                Merci <strong>{{ form.name }}</strong
+                >. Votre demande a bien été enregistrée. Notre conseiller
+                commercial vous contactera rapidement au numéro
+                <strong>{{ form.phone }}</strong
+                >.
               </p>
-              <button type="button" class="btn btn-secondary btn-sm" @click="sent = false">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                @click="sent = false"
+              >
                 Envoyer un autre message
               </button>
             </div>
@@ -181,23 +244,34 @@ async function submitMessage() {
             <form v-else @submit.prevent="submitMessage" class="contact-form">
               <div class="grid-2">
                 <div class="form-group">
-                  <label class="form-label">Nom et prénom *</label>
+                  <label class="form-label" for="contact-name"
+                    >Nom et prénom *</label
+                  >
                   <input
+                    id="contact-name"
                     v-model="form.name"
                     type="text"
                     class="form-input"
                     placeholder="Ex: Kouamé Jean"
+                    autocomplete="name"
+                    maxlength="120"
                     required
                   />
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Numéro de téléphone *</label>
+                  <label class="form-label" for="contact-phone"
+                    >Numéro de téléphone *</label
+                  >
                   <input
+                    id="contact-phone"
                     v-model="form.phone"
                     type="tel"
                     class="form-input"
                     placeholder="Ex: +225 07 00 00 00 00"
+                    autocomplete="tel"
+                    inputmode="tel"
+                    maxlength="20"
                     required
                   />
                 </div>
@@ -205,34 +279,60 @@ async function submitMessage() {
 
               <div class="grid-2">
                 <div class="form-group">
-                  <label class="form-label">Adresse email (facultatif)</label>
+                  <label class="form-label" for="contact-email"
+                    >Adresse email (facultatif)</label
+                  >
                   <input
+                    id="contact-email"
                     v-model="form.email"
                     type="email"
                     class="form-input"
                     placeholder="jean.kouame@exemple.ci"
+                    autocomplete="email"
+                    maxlength="160"
                   />
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label">Objet de votre demande</label>
-                  <select v-model="form.subject" class="form-select">
-                    <option value="Achat véhicule en stock">Achat d'un véhicule en stock</option>
-                    <option value="Devis d'importation de Chine">Demande d'importation sur-mesure</option>
-                    <option value="Essai routier showroom">Rendez-vous pour visite / essai</option>
-                    <option value="Pièces de rechange & SAV">Pièces de rechange & SAV</option>
-                    <option value="Demande générale">Autre renseignement</option>
+                  <label class="form-label" for="contact-subject"
+                    >Objet de votre demande</label
+                  >
+                  <select
+                    id="contact-subject"
+                    v-model="form.subject"
+                    class="form-select"
+                  >
+                    <option value="Achat véhicule en stock">
+                      Achat d'un véhicule en stock
+                    </option>
+                    <option value="Demande de devis commercial">
+                      Demande de devis commercial
+                    </option>
+                    <option value="Essai routier showroom">
+                      Rendez-vous pour visite / essai
+                    </option>
+                    <option value="Pièces de rechange & SAV">
+                      Pièces de rechange & SAV
+                    </option>
+                    <option value="Demande générale">
+                      Autre renseignement
+                    </option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Votre message ou précisions sur le véhicule recherché *</label>
+                <label class="form-label" for="contact-message"
+                  >Votre message ou précisions sur le véhicule recherché
+                  *</label
+                >
                 <textarea
+                  id="contact-message"
                   v-model="form.message"
                   class="form-textarea"
                   rows="4"
                   placeholder="Décrivez votre projet : marque souhaitée, modèle, motorisation, budget..."
+                  maxlength="2000"
                   required
                 ></textarea>
               </div>
@@ -242,13 +342,20 @@ async function submitMessage() {
                 <span>{{ errorMsg }}</span>
               </div>
 
-              <button type="submit" class="btn btn-primary btn-lg submit-btn" :disabled="sending">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg submit-btn"
+                :disabled="sending"
+              >
                 <Send :size="18" />
-                <span>{{ sending ? "Envoi de votre message..." : "Envoyer mon message" }}</span>
+                <span>{{
+                  sending ? "Envoi de votre message..." : "Envoyer mon message"
+                }}</span>
               </button>
 
               <p class="form-privacy-note">
-                Vos coordonnées sont strictement confidentielles et utilisées uniquement pour répondre à votre demande.
+                Vos coordonnées sont strictement confidentielles et utilisées
+                uniquement pour répondre à votre demande.
               </p>
             </form>
           </div>

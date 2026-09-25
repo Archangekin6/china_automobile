@@ -19,14 +19,14 @@ import {
 
 const site = useSiteStore();
 
-// Simulateur de devis express d'importation
+// Demande commerciale selon les critères du visiteur
 const simBrand = ref("BYD");
 const simType = ref("SUV");
 const simBudget = ref("10-15m");
 const simYear = ref("Neuf (2024)");
 
 function getSimulationWhatsAppLink() {
-  const text = `Bonjour China Automobile, je souhaite obtenir une estimation pour l'importation d'un véhicule :
+  const text = `Bonjour China Automobile, je souhaite obtenir des informations commerciales sur un véhicule :
 - Type : ${simType.value}
 - Marque souhaitée : ${simBrand.value}
 - État : ${simYear.value}
@@ -44,28 +44,31 @@ Pouvez-vous me proposer les options correspondantes ?`;
         <nav class="breadcrumbs" aria-label="Fil d'Ariane">
           <RouterLink to="/">Accueil</RouterLink>
           <span class="crumb-sep">/</span>
-          <span class="crumb-active">Services & Importation</span>
+          <span class="crumb-active">Véhicules & Informations</span>
         </nav>
 
         <div class="header-badge">
           <Wrench :size="14" />
-          <span>Prestations Clé en Main</span>
+          <span>Vente automobile</span>
         </div>
-        <h1 class="page-title">Nos Solutions d'Importation & Vente Automobile</h1>
+        <h1 class="page-title">Nos Véhicules et Informations Commerciales</h1>
         <p class="page-lead">
-          De la sélection de votre véhicule auprès des concessionnaires agréés en Chine jusqu'à la remise des clés et de la carte grise à Abidjan : nous prenons en charge l'intégralité du processus sans intermédiaire.
+          Découvrez les véhicules de marques chinoises proposés en Côte
+          d'Ivoire, consultez leurs informations et échangez directement avec
+          notre équipe.
         </p>
       </div>
     </header>
 
     <div class="container page-body">
-      <!-- Grille des 6 Services Principaux -->
+      <!-- Présentation des informations commerciales -->
       <section class="services-grid-section">
         <div class="section-intro">
-          <span class="section-tag">Expertise Complète</span>
-          <h2>Un Accompagnement Professionnel de A à Z</h2>
+          <span class="section-tag">Vente automobile</span>
+          <h2>Des informations claires avant votre décision</h2>
           <p class="section-desc">
-            Chaque étape est sécurisée pour vous garantir un véhicule irréprochable au tarif le plus juste.
+            Parcourez le catalogue, comparez les modèles et contactez-nous pour
+            toute information disponible.
           </p>
         </div>
 
@@ -77,12 +80,22 @@ Pouvez-vous me proposer les options correspondantes ?`;
             </div>
             <h3>Vente de Véhicules en Stock</h3>
             <p>
-              Consultez notre parc de véhicules déjà arrivés à Abidjan. Disponibilité immédiate, visite physique sur notre showroom, essai routier et transaction rapide sans délai d'acheminement.
+              Consultez les véhicules proposés par China Automobile et vérifiez
+              leur statut dans le catalogue.
             </p>
             <ul class="service-perks">
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Disponibilité sous 24 à 48 heures</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Véhicules visibles et testables sur place</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Papiers et dédouanement déjà validés</li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Statut affiché
+                lorsqu'il est disponible
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Caractéristiques
+                présentées par modèle
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Demande
+                d'informations auprès de l'équipe
+              </li>
             </ul>
           </div>
 
@@ -91,14 +104,24 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="service-icon-wrap">
               <Ship :size="24" />
             </div>
-            <h3>Importation Directe Sur-Mesure</h3>
+            <h3>Caractéristiques des modèles</h3>
             <p>
-              Vous souhaitez une finition spécifique, une couleur d'intérieur particulière ou le tout dernier modèle hybride rechargeable ? Nous passons commande directement auprès de nos partenaires en Chine.
+              Comparez les informations disponibles sur les modèles, leurs
+              versions, leurs équipements et leur motorisation.
             </p>
             <ul class="service-perks">
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Configuration personnalisée d'usine</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Accès à tous les constructeurs chinois</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Tarifs constructeurs sans marges abusives</li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Marques chinoises
+                présentées clairement
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Informations
+                techniques consultables
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Comparaison
+                facilitée des modèles
+              </li>
             </ul>
           </div>
 
@@ -107,14 +130,24 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="service-icon-wrap">
               <FileCheck2 :size="24" />
             </div>
-            <h3>Dédouanement Portuaire Intégral</h3>
+            <h3>Prix et transparence</h3>
             <p>
-              Fini les tracasseries douanières et les mauvaises surprises au Port Autonome d'Abidjan. Nous nous chargeons de l'ensemble des taxes, droits de douane et déclarations officielles.
+              Consultez les prix lorsqu'ils sont renseignés et demandez une
+              information commerciale lorsque le prix n'est pas affiché.
             </p>
             <ul class="service-perks">
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Transparence tarifaire totale dès le devis</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Aucune taxe supplémentaire imprévue</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Traitement rapide par nos transitaires agréés</li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Prix affichés
+                lorsqu'ils sont disponibles
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Statut commercial
+                clairement indiqué
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Réponse directe de
+                l'équipe
+              </li>
             </ul>
           </div>
 
@@ -123,14 +156,24 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="service-icon-wrap">
               <ShieldCheck :size="24" />
             </div>
-            <h3>Inspection Technique Pré-Départ</h3>
+            <h3>Conseil avant achat</h3>
             <p>
-              Avant tout embarquement maritime en Chine, nos experts mandatés réalisent un audit physique, mécanique et électronique complet avec rapport photos et vidéos haute résolution.
+              Notre équipe peut répondre à vos questions sur les modèles
+              présentés et leurs informations disponibles.
             </p>
             <ul class="service-perks">
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Contrôle moteur, batterie et carrosserie</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Dossier photographique remis à l'acheteur</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Validation client requise avant départ</li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Questions sur les
+                caractéristiques
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Informations sur
+                la disponibilité
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Demande de devis
+                lorsqu'elle est proposée
+              </li>
             </ul>
           </div>
 
@@ -139,14 +182,24 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="service-icon-wrap">
               <Sparkles :size="24" />
             </div>
-            <h3>Immatriculation & Clé en Main</h3>
+            <h3>Contact et demande commerciale</h3>
             <p>
-              Nous vous remettons votre véhicule prêt à circuler avec toutes les pièces administratives obligatoires en Côte d'Ivoire : carte grise, pose des plaques et certificat de conformité.
+              Contactez China Automobile pour demander des informations, un
+              devis ou un rappel lorsqu'un tel parcours est disponible.
             </p>
             <ul class="service-perks">
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Démarches auprès du Ministère des Transports</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Préparation esthétique et lavage complet</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Remise des clés officielle en showroom</li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Téléphone,
+                WhatsApp et formulaire
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Demande conservée
+                par l'équipe commerciale
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Aucun paiement en
+                ligne
+              </li>
             </ul>
           </div>
 
@@ -155,58 +208,81 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="service-icon-wrap">
               <Wrench :size="24" />
             </div>
-            <h3>Conseil Technique & Pièces de Rechange</h3>
+            <h3>Présentation professionnelle</h3>
             <p>
-              Nous accompagnons nos clients sur la durée : approvisionnement rapide en pièces d'origine (filtres, freins, optiques, électronique) et mise en relation avec des techniciens qualifiés.
+              Retrouvez une présentation structurée des véhicules, des marques
+              et des informations disponibles en Côte d'Ivoire.
             </p>
             <ul class="service-perks">
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Accès aux catalogues de pièces d'origine</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Conseils d'entretien préventif</li>
-              <li><CheckCircle2 :size="15" class="perk-icon" /> Disponibilité de notre service après-vente</li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Catalogue organisé
+                par marque
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Fiches détaillées
+                par véhicule
+              </li>
+              <li>
+                <CheckCircle2 :size="15" class="perk-icon" /> Contact direct
+                avec China Automobile
+              </li>
             </ul>
           </div>
         </div>
       </section>
 
-      <!-- Chronologie Logistique : Le parcours d'une commande -->
+      <!-- Parcours d'achat : de la découverte au contact -->
       <section class="timeline-section">
         <div class="section-intro text-center">
           <span class="section-tag">Transparence & Suivi</span>
-          <h2>Le Parcours d'une Commande d'Importation</h2>
+          <h2>Le Parcours d'un Achat Automobile</h2>
           <p class="section-desc">
-            De la signature de votre bon de commande jusqu'à votre première virée sur les boulevards d'Abidjan.
+            De la découverte d'un modèle à la prise de contact avec notre équipe
+            commerciale.
           </p>
         </div>
 
         <div class="timeline-steps">
           <div class="timeline-step">
             <div class="step-badge">01</div>
-            <h4>Sélection & Devis Ferme</h4>
-            <p>Définition du modèle, validation du prix global clé en main et formalisation du contrat.</p>
+            <h4>Découvrez les véhicules</h4>
+            <p>Parcourez les modèles proposés et leurs caractéristiques.</p>
           </div>
 
           <div class="timeline-step">
             <div class="step-badge">02</div>
-            <h4>Acquisition & Contrôle</h4>
-            <p>Achat du véhicule en Chine, audit technique certifié et rapport photographique remis au client.</p>
+            <h4>Comparez les modèles</h4>
+            <p>
+              Comparez les marques, versions, équipements, prix et statuts
+              disponibles.
+            </p>
           </div>
 
           <div class="timeline-step">
             <div class="step-badge">03</div>
-            <h4>Fret Maritime Sécurisé</h4>
-            <p>Embarquement en conteneur sécurisé ou navire roulier (Ro-Ro) avec suivi régulier de la traversée.</p>
+            <h4>Vérifiez les informations</h4>
+            <p>
+              Consultez les informations affichées et identifiez les éléments à
+              préciser.
+            </p>
           </div>
 
           <div class="timeline-step">
             <div class="step-badge">04</div>
-            <h4>Dédouanement Portuaire</h4>
-            <p>Prise en charge au port d'Abidjan, dédouanement officiel et transfert sécurisé vers notre parc.</p>
+            <h4>Contactez l'équipe</h4>
+            <p>
+              Demandez des informations, un devis ou un rappel lorsqu'un tel
+              parcours existe.
+            </p>
           </div>
 
           <div class="timeline-step">
             <div class="step-badge">05</div>
-            <h4>Livraison Clé en Main</h4>
-            <p>Immatriculation, préparation esthétique finale et remise des clés avec tous les documents officiels.</p>
+            <h4>Échangez directement</h4>
+            <p>
+              Notre équipe vous répond sur le véhicule et les informations
+              commerciales disponibles.
+            </p>
           </div>
         </div>
       </section>
@@ -217,15 +293,23 @@ Pouvez-vous me proposer les options correspondantes ?`;
           <div class="sim-info">
             <div class="sim-badge">
               <Calculator :size="15" />
-              <span>Estimation Rapide</span>
+              <span>Demande d'informations</span>
             </div>
-            <h2>Configurez Votre Demande d'Importation</h2>
+            <h2>Décrivez votre recherche automobile</h2>
             <p>
-              Sélectionnez vos critères de base et échangez instantanément avec l'un de nos conseillers commerciaux pour recevoir une sélection de modèles et une tarification détaillée.
+              Sélectionnez quelques critères et contactez notre équipe pour
+              obtenir les informations commerciales disponibles.
             </p>
-            <div class="sim-phone-call">
+            <div v-if="site.hasPhone" class="sim-phone-call">
               <Phone :size="18" class="text-brand" />
-              <span>Ou contactez-nous par téléphone : <strong>{{ site.settings.phone }}</strong></span>
+              <span
+                >Ou contactez-nous par téléphone :
+                <strong>{{ site.settings.phone }}</strong></span
+              >
+            </div>
+            <div v-else class="sim-phone-call">
+              <Phone :size="18" class="text-brand" />
+              <span>Téléphone non renseigné</span>
             </div>
           </div>
 
@@ -233,10 +317,14 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="form-group">
               <label class="form-label">Type de véhicule</label>
               <select v-model="simType" class="form-select">
-                <option value="SUV Familial">SUV Familial (5 à 7 places)</option>
+                <option value="SUV Familial">
+                  SUV Familial (5 à 7 places)
+                </option>
                 <option value="SUV Compact">SUV Compact Urbain</option>
                 <option value="Berline Élégante">Berline Routière</option>
-                <option value="Véhicule 100% Électrique">100% Électrique (EV)</option>
+                <option value="Véhicule 100% Électrique">
+                  100% Électrique (EV)
+                </option>
                 <option value="Pick-up Utilitaire">Pick-up / Utilitaire</option>
               </select>
             </div>
@@ -244,12 +332,18 @@ Pouvez-vous me proposer les options correspondantes ?`;
             <div class="form-group">
               <label class="form-label">Constructeur préféré</label>
               <select v-model="simBrand" class="form-select">
-                <option value="BYD">BYD (Leader mondial électrique & hybride)</option>
+                <option value="BYD">
+                  BYD (Leader mondial électrique & hybride)
+                </option>
                 <option value="Chery">Chery (Gamme Tiggo réputée)</option>
-                <option value="Haval">Haval (Spécialiste SUV Great Wall)</option>
+                <option value="Haval">
+                  Haval (Spécialiste SUV Great Wall)
+                </option>
                 <option value="Geely">Geely (Technologie groupe Volvo)</option>
                 <option value="Changan">Changan (Design & confort)</option>
-                <option value="Autre constructeur">Autre constructeur chinois</option>
+                <option value="Autre constructeur">
+                  Autre constructeur chinois
+                </option>
               </select>
             </div>
 
@@ -258,17 +352,23 @@ Pouvez-vous me proposer les options correspondantes ?`;
                 <label class="form-label">État du véhicule</label>
                 <select v-model="simYear" class="form-select">
                   <option value="Neuf (2024)">Neuf (Année en cours)</option>
-                  <option value="Occasion récente (2021-2023)">Occasion récente certifiée</option>
+                  <option value="Occasion récente (2021-2023)">
+                    Occasion récente certifiée
+                  </option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label class="form-label">Budget indicatif (FCFA)</label>
                 <select v-model="simBudget" class="form-select">
-                  <option value="Moins de 10 millions">Moins de 10 millions</option>
+                  <option value="Moins de 10 millions">
+                    Moins de 10 millions
+                  </option>
                   <option value="10 à 15 millions">10 à 15 millions</option>
                   <option value="15 à 22 millions">15 à 22 millions</option>
-                  <option value="Plus de 22 millions">Plus de 22 millions</option>
+                  <option value="Plus de 22 millions">
+                    Plus de 22 millions
+                  </option>
                 </select>
               </div>
             </div>
@@ -542,9 +642,15 @@ Pouvez-vous me proposer les options correspondantes ?`;
 
 .sim-wrapper {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 3.5rem;
   align-items: center;
+  min-width: 0;
+}
+
+.sim-info,
+.sim-form-card {
+  min-width: 0;
 }
 
 .sim-badge {
@@ -609,6 +715,10 @@ Pouvez-vous me proposer les options correspondantes ?`;
 }
 
 @media (max-width: 980px) {
+  .simulation-section {
+    padding: 2rem 1rem;
+  }
+
   .timeline-steps {
     grid-template-columns: 1fr;
     gap: 2rem;

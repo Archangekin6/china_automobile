@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { supabase } from "@/lib/supabase";
+import { useSiteStore } from "@/stores/site";
 import { useRoute, useRouter } from "vue-router";
 import CarCard from "@/components/CarCard.vue";
 import {
@@ -15,6 +16,7 @@ import {
 
 const route = useRoute();
 const router = useRouter();
+const site = useSiteStore();
 
 const cars = ref([]);
 const loading = ref(true);
@@ -47,7 +49,8 @@ async function loadCars() {
     if (error) throw error;
     cars.value = data || [];
   } catch (err) {
-    errorMsg.value = "Impossible de charger le catalogue de véhicules pour le moment.";
+    errorMsg.value =
+      "Impossible de charger le catalogue de véhicules pour le moment.";
     console.error(err);
   } finally {
     loading.value = false;
@@ -70,7 +73,8 @@ const filteredCars = computed(() => {
   let list = cars.value.filter((c) => {
     // Recherche textuelle
     const query = search.value.trim().toLowerCase();
-    const fullText = `${c.brand || ""} ${c.model || ""} ${c.year || ""}`.toLowerCase();
+    const fullText =
+      `${c.brand || ""} ${c.model || ""} ${c.year || ""}`.toLowerCase();
     const matchSearch = !query || fullText.includes(query);
 
     // Marque
@@ -80,12 +84,16 @@ const filteredCars = computed(() => {
     const matchFuel = !fuel.value || c.fuel === fuel.value;
 
     // Transmission
-    const matchTransmission = !transmission.value || c.transmission === transmission.value;
+    const matchTransmission =
+      !transmission.value || c.transmission === transmission.value;
 
     // Prix max
-    const matchPrice = !maxPrice.value || Number(c.price) <= Number(maxPrice.value);
+    const matchPrice =
+      !maxPrice.value || Number(c.price) <= Number(maxPrice.value);
 
-    return matchSearch && matchBrand && matchFuel && matchTransmission && matchPrice;
+    return (
+      matchSearch && matchBrand && matchFuel && matchTransmission && matchPrice
+    );
   });
 
   // Tri
@@ -97,7 +105,9 @@ const filteredCars = computed(() => {
     list.sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
   } else {
     // Par défaut : plus récents (id ou created_at)
-    list.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    list.sort(
+      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
+    );
   }
 
   return list;
@@ -131,7 +141,8 @@ onMounted(() => {
         </div>
         <h1 class="catalog-title">Notre Parc de Véhicules</h1>
         <p class="catalog-desc">
-          Découvrez notre sélection de véhicules chinois neufs et d'occasion certifiée, disponibles immédiatement à Abidjan ou en transit d'importation.
+          Découvrez notre sélection de véhicules chinois neufs et d'occasion
+          certifiée, avec leur prix et leur statut lorsqu'ils sont disponibles.
         </p>
       </div>
     </header>
@@ -153,8 +164,8 @@ onMounted(() => {
           <!-- Tri -->
           <div class="sort-field-box">
             <ArrowUpDown :size="16" class="field-icon" />
-            <select v-model="sortBy" aria-label="Trier les résultats">
-              <option value="newest">Plus récents d'abord</option>
+            <select v-model="sortBy" aria-label="Trier les véhicules">
+              <option value="newest">Plus récents</option>
               <option value="price_asc">Prix : croissant</option>
               <option value="price_desc">Prix : décroissant</option>
               <option value="year_desc">Année la plus récente</option>
@@ -166,15 +177,23 @@ onMounted(() => {
         <div class="filters-secondary-row">
           <!-- Marque -->
           <div class="filter-select-wrapper">
-            <select v-model="brand" aria-label="Filtrer par marque">
+            <select
+              v-model="brand"
+              aria-label="Filtrer les véhicules par marque"
+            >
               <option value="">Toutes les marques</option>
-              <option v-for="b in availableBrands" :key="b" :value="b">{{ b }}</option>
+              <option v-for="b in availableBrands" :key="b" :value="b">
+                {{ b }}
+              </option>
             </select>
           </div>
 
           <!-- Carburant -->
           <div class="filter-select-wrapper">
-            <select v-model="fuel" aria-label="Filtrer par carburant">
+            <select
+              v-model="fuel"
+              aria-label="Filtrer les véhicules par énergie"
+            >
               <option value="">Tous carburants</option>
               <option value="Essence">Essence</option>
               <option value="Diesel">Diesel</option>
@@ -185,7 +204,10 @@ onMounted(() => {
 
           <!-- Boîte de vitesses -->
           <div class="filter-select-wrapper">
-            <select v-model="transmission" aria-label="Filtrer par boîte">
+            <select
+              v-model="transmission"
+              aria-label="Filtrer les véhicules par transmission"
+            >
               <option value="">Toutes transmissions</option>
               <option value="Automatique">Automatique</option>
               <option value="Manuelle">Manuelle</option>
@@ -200,7 +222,7 @@ onMounted(() => {
               placeholder="Budget max (FCFA)"
               min="0"
               step="500000"
-              aria-label="Budget maximum en FCFA"
+              aria-label="Prix maximum en FCFA"
             />
           </div>
 
@@ -223,7 +245,9 @@ onMounted(() => {
         <div class="results-count">
           <span class="count-number">{{ filteredCars.length }}</span>
           <span class="count-label">
-            {{ filteredCars.length > 1 ? "véhicules trouvés" : "véhicule trouvé" }}
+            {{
+              filteredCars.length > 1 ? "véhicules trouvés" : "véhicule trouvé"
+            }}
           </span>
         </div>
 
@@ -235,7 +259,19 @@ onMounted(() => {
       <!-- États d'affichage -->
       <div v-if="errorMsg" class="error-banner">
         <p>{{ errorMsg }}</p>
-        <button class="btn btn-sm btn-outline" @click="loadCars">Réessayer</button>
+        <button class="btn btn-sm btn-outline" @click="loadCars">
+          Réessayer
+        </button>
+      </div>
+
+      <div
+        v-else-if="loading"
+        class="loading-state"
+        role="status"
+        aria-live="polite"
+      >
+        <Car :size="32" class="loading-icon" />
+        <p>Chargement du catalogue en cours...</p>
       </div>
 
       <!-- Grille des voitures -->
@@ -250,7 +286,8 @@ onMounted(() => {
         </div>
         <h3>Aucun véhicule ne correspond à vos critères</h3>
         <p>
-          Nous n'avons pas trouvé de véhicule correspondant exactement à votre sélection. Essayez d'ajuster vos filtres de prix ou de motorisation.
+          Nous n'avons pas trouvé de véhicule correspondant exactement à votre
+          sélection. Essayez d'ajuster vos filtres de prix ou de motorisation.
         </p>
         <div class="empty-actions">
           <button type="button" class="btn btn-secondary" @click="resetFilters">
@@ -258,12 +295,16 @@ onMounted(() => {
             <span>Effacer les filtres</span>
           </button>
           <a
-            :href="site.waLink('Bonjour, je recherche un véhicule qui n\'est pas affiché dans votre catalogue.')"
+            :href="
+              site.waLink(
+                'Bonjour, je recherche un véhicule qui n\'est pas affiché dans votre catalogue.',
+              )
+            "
             target="_blank"
             rel="noopener"
             class="btn btn-whatsapp"
           >
-            Demander une recherche personnalisée
+            Demander des informations
           </a>
         </div>
       </div>

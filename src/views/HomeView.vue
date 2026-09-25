@@ -28,11 +28,13 @@ const budget = ref([]);
 const brands = ref([]);
 const reviews = ref([]);
 const loading = ref(true);
+const loadError = ref("");
 
 const money = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 
 // Image de fond par défaut automobile premium si non configurée dans l'admin
-const defaultHeroBg = "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=2000&q=80";
+const defaultHeroBg =
+  "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=2000&q=80";
 
 const heroStyle = computed(() => {
   const bgImg = s.value.hero_image || defaultHeroBg;
@@ -49,9 +51,11 @@ function search(text = query.value) {
   }
 }
 
-onMounted(async () => {
+async function loadHomeData() {
+  loading.value = true;
+  loadError.value = "";
   try {
-    const [l, b, br, t] = await Promise.all([
+    const results = await Promise.all([
       supabase
         .from("cars")
         .select("*")
@@ -73,16 +77,27 @@ onMounted(async () => {
         .order("created_at", { ascending: false }),
     ]);
 
+    const failed = results.find((result) => result.error);
+    if (failed?.error) throw failed.error;
+
+    const [l, b, br, t] = results;
     latest.value = l.data || [];
     budget.value = b.data || [];
     brands.value = br.data || [];
     reviews.value = t.data || [];
   } catch (err) {
-    console.error("Erreur lors du chargement des données de la page d'accueil :", err);
+    console.error(
+      "Erreur lors du chargement des données de la page d'accueil :",
+      err,
+    );
+    loadError.value =
+      "Les contenus de la page d'accueil ne sont pas disponibles pour le moment. Réessayez dans quelques instants.";
   } finally {
     loading.value = false;
   }
-});
+}
+
+onMounted(loadHomeData);
 </script>
 
 <template>
@@ -92,7 +107,7 @@ onMounted(async () => {
       <div class="container hero-container">
         <div class="hero-content">
           <div class="hero-badge">
-            <span class="hero-badge-pill">Importation Directe</span>
+            <span class="hero-badge-pill">Vente automobile</span>
             <span class="hero-badge-text">Constructeurs Chinois • Abidjan</span>
           </div>
 
@@ -118,11 +133,19 @@ onMounted(async () => {
 
           <!-- Raccourcis de recherche populaires -->
           <div class="quick-tags">
-            <span class="quick-label">Recherches courantes :</span>
-            <button type="button" class="tag-btn" @click="search('BYD')">BYD</button>
-            <button type="button" class="tag-btn" @click="search('Chery')">Chery</button>
-            <button type="button" class="tag-btn" @click="search('Haval')">Haval</button>
-            <button type="button" class="tag-btn" @click="search('Geely')">Geely</button>
+            <span class="quick-label">Rechercher par marque :</span>
+            <button type="button" class="tag-btn" @click="search('BYD')">
+              BYD
+            </button>
+            <button type="button" class="tag-btn" @click="search('Chery')">
+              Chery
+            </button>
+            <button type="button" class="tag-btn" @click="search('Haval')">
+              Haval
+            </button>
+            <button type="button" class="tag-btn" @click="search('Geely')">
+              Geely
+            </button>
           </div>
         </div>
 
@@ -138,29 +161,42 @@ onMounted(async () => {
           <div class="hero-feature-item">
             <Ship :size="20" class="feature-icon" />
             <div>
-              <strong>Import Sécurisé</strong>
-              <span>Fret maritime & suivi complet</span>
+              <strong>Disponibilité claire</strong>
+              <span>Statut réel des véhicules proposés</span>
             </div>
           </div>
           <div class="hero-feature-item">
             <FileCheck2 :size="20" class="feature-icon" />
             <div>
-              <strong>Formalités Clé en Main</strong>
-              <span>Dédouanement à Abidjan inclus</span>
+              <strong>Conseil direct</strong>
+              <span>Une équipe pour vos questions commerciales</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <div v-if="loadError" class="container home-error" role="alert">
+      <p>{{ loadError }}</p>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline"
+        @click="loadHomeData"
+      >
+        Réessayer
+      </button>
+    </div>
+
     <!-- Dernières Voitures Ajoutées -->
     <section v-if="s.show_latest && latest.length" class="section-block">
       <div class="container">
         <div class="section-head">
           <div>
-            <div class="section-tag">Arrivages récents</div>
+            <div class="section-tag">Véhicules récemment ajoutés</div>
             <h2 class="section-title">{{ s.latest_title }}</h2>
-            <p v-if="s.latest_subtitle" class="section-sub">{{ s.latest_subtitle }}</p>
+            <p v-if="s.latest_subtitle" class="section-sub">
+              {{ s.latest_subtitle }}
+            </p>
           </div>
           <RouterLink to="/voitures" class="section-link">
             <span>Consulter tout le catalogue</span>
@@ -175,14 +211,20 @@ onMounted(async () => {
     </section>
 
     <!-- Sélection Petits Budgets -->
-    <section v-if="s.show_budget && budget.length" class="section-block section-alt">
+    <section
+      v-if="s.show_budget && budget.length"
+      class="section-block section-alt"
+    >
       <div class="container">
         <div class="section-head">
           <div>
             <div class="section-tag">Opportunités tarifaires</div>
-            <h2 class="section-title">Véhicules à moins de {{ money(s.budget_max) }}</h2>
+            <h2 class="section-title">
+              Véhicules à moins de {{ money(s.budget_max) }}
+            </h2>
             <p class="section-sub">
-              Sélection de véhicules économiques disponibles ou sur commande immédiate.
+              Sélection de véhicules économiques avec prix et disponibilité
+              affichés lorsqu'ils sont renseignés.
             </p>
           </div>
           <RouterLink to="/voitures" class="section-link">
@@ -198,13 +240,19 @@ onMounted(async () => {
     </section>
 
     <!-- Section Marques Disponibles -->
-    <section v-if="s.show_brands && brands.length" id="marques" class="section-block">
+    <section
+      v-if="s.show_brands && brands.length"
+      id="marques"
+      class="section-block"
+    >
       <div class="container">
         <div class="section-head-center">
           <div class="section-tag">Constructeurs Partenaires</div>
           <h2 class="section-title">{{ s.brands_title }}</h2>
           <p class="section-sub max-w-ch">
-            Nous travaillons avec les plus grands constructeurs automobiles chinois pour vous garantir fiabilité, disponibilité des pièces et meilleur rapport qualité/prix.
+            Nous travaillons avec les plus grands constructeurs automobiles
+            chinois pour vous garantir fiabilité, disponibilité des pièces et
+            meilleur rapport qualité/prix.
           </p>
         </div>
 
@@ -232,14 +280,15 @@ onMounted(async () => {
       </div>
     </section>
 
-    <!-- Section Services Spécialisés China Automobile -->
+    <!-- Section Vente et Informations China Automobile -->
     <section id="services" class="section-block section-alt">
       <div class="container">
         <div class="section-head-center">
-          <div class="section-tag">Expertise & Accompagnement</div>
-          <h2 class="section-title">Nos Prestations Automobiles</h2>
+          <div class="section-tag">Vente automobile</div>
+          <h2 class="section-title">Trouvez le véhicule qui vous correspond</h2>
           <p class="section-sub max-w-ch">
-            Un accompagnement complet de la commande en usine jusqu'à la remise des clés et des documents d'immatriculation.
+            Découvrez les modèles proposés, comparez leurs caractéristiques et
+            contactez notre équipe pour obtenir les informations disponibles.
           </p>
         </div>
 
@@ -250,7 +299,8 @@ onMounted(async () => {
             </div>
             <h3 class="service-title">Vente de Véhicules en Stock</h3>
             <p class="service-desc">
-              Consultez notre parc de véhicules déjà disponibles à Abidjan, prêts à partir avec visite et essai sur rendez-vous.
+              Consultez notre parc de véhicules déjà disponibles à Abidjan,
+              prêts à partir avec visite et essai sur rendez-vous.
             </p>
           </div>
 
@@ -258,9 +308,10 @@ onMounted(async () => {
             <div class="service-icon-box">
               <Ship :size="24" />
             </div>
-            <h3 class="service-title">Importation Sur-Mesure</h3>
+            <h3 class="service-title">Caractéristiques détaillées</h3>
             <p class="service-desc">
-              Vous avez un modèle précis en tête ? Nous lançons l'acquisition directe auprès des concessions et usines partenaires en Chine.
+              Consultez les informations techniques disponibles pour chaque
+              modèle avant de prendre contact.
             </p>
           </div>
 
@@ -268,9 +319,10 @@ onMounted(async () => {
             <div class="service-icon-box">
               <FileCheck2 :size="24" />
             </div>
-            <h3 class="service-title">Dédouanement & Transit</h3>
+            <h3 class="service-title">Prix et disponibilité</h3>
             <p class="service-desc">
-              Gestion intégrale des formalités de dédouanement portuaire, taxes et conformité douanière en Côte d'Ivoire.
+              Vérifiez le prix lorsqu'il est renseigné et le statut réel du
+              véhicule dans le catalogue.
             </p>
           </div>
 
@@ -278,16 +330,17 @@ onMounted(async () => {
             <div class="service-icon-box">
               <ShieldCheck :size="24" />
             </div>
-            <h3 class="service-title">Inspection Pré-Acheminement</h3>
+            <h3 class="service-title">Conseil avant achat</h3>
             <p class="service-desc">
-              Rapport d'inspection photographique et mécanique détaillé avant embarquement maritime pour votre entière sérénité.
+              Posez vos questions à China Automobile avant de choisir votre
+              prochain véhicule.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Section Processus de Commande (Comment ça marche) -->
+    <!-- Section Parcours d'achat (Comment ça marche) -->
     <section
       v-if="s.show_steps && s.steps && s.steps.length"
       id="comment-commander"
@@ -298,16 +351,13 @@ onMounted(async () => {
           <div class="section-tag">Simplicité & Transparence</div>
           <h2 class="section-title">{{ s.steps_title }}</h2>
           <p class="section-sub max-w-ch">
-            Une procédure claire et sécurisée sans aucun paiement en ligne : notre équipe vous guide étape par étape.
+            Une procédure claire et sécurisée sans aucun paiement en ligne :
+            notre équipe vous guide étape par étape.
           </p>
         </div>
 
         <div class="steps-container">
-          <div
-            v-for="(step, i) in s.steps"
-            :key="i"
-            class="step-item"
-          >
+          <div v-for="(step, i) in s.steps" :key="i" class="step-item">
             <div class="step-num-badge">0{{ i + 1 }}</div>
             <h3 class="step-title">{{ step.title }}</h3>
             <p class="step-desc">{{ step.text }}</p>
@@ -321,25 +371,41 @@ onMounted(async () => {
       <div class="container about-wrapper">
         <div class="about-text">
           <div class="section-tag">Qui sommes-nous ?</div>
-          <h2 class="section-title">China Automobile, votre pont direct avec l'industrie automobile chinoise</h2>
+          <h2 class="section-title">
+            China Automobile, votre pont direct avec l'industrie automobile
+            chinoise
+          </h2>
           <p class="about-lead">
-            L'industrie automobile chinoise s'est imposée comme le leader mondial de la mobilité moderne, des SUV technologiques et des motorisations efficientes.
+            L'industrie automobile chinoise s'est imposée comme le leader
+            mondial de la mobilité moderne, des SUV technologiques et des
+            motorisations efficientes.
           </p>
           <p class="about-body">
-            Basé à Abidjan, <strong>China Automobile</strong> a été créé pour offrir aux automobilistes et professionnels ivoiriens un accès fiable, transparent et sécurisé aux modèles les plus demandés des constructeurs tels que BYD, Chery, Haval, Geely et Changan.
+            Basé à Abidjan, <strong>China Automobile</strong> a été créé pour
+            offrir aux automobilistes et professionnels ivoiriens un accès
+            fiable, transparent et sécurisé aux modèles les plus demandés des
+            constructeurs tels que BYD, Chery, Haval, Geely et Changan.
           </p>
           <div class="about-checklist">
             <div class="check-entry">
               <CheckCircle2 :size="18" class="check-icon" />
-              <span>Transparence tarifaire intégrale : prix affichés sans frais cachés</span>
+              <span
+                >Transparence tarifaire intégrale : prix affichés sans frais
+                cachés</span
+              >
             </div>
             <div class="check-entry">
               <CheckCircle2 :size="18" class="check-icon" />
-              <span>Assistance pour les démarches d'immatriculation et carte grise</span>
+              <span
+                >Assistance pour les démarches d'immatriculation et carte
+                grise</span
+              >
             </div>
             <div class="check-entry">
               <CheckCircle2 :size="18" class="check-icon" />
-              <span>Interlocuteurs professionnels à votre écoute à Abidjan</span>
+              <span
+                >Interlocuteurs professionnels à votre écoute à Abidjan</span
+              >
             </div>
           </div>
         </div>
@@ -352,10 +418,16 @@ onMounted(async () => {
             </div>
             <h3>Commandez votre véhicule en toute sérénité</h3>
             <p>
-              Prenez contact avec notre conseiller pour obtenir une fiche détaillée ou lancer une recherche personnalisée selon votre budget.
+              Prenez contact avec notre conseiller pour obtenir une fiche
+              détaillée ou lancer une recherche personnalisée selon votre
+              budget.
             </p>
             <a
-              :href="site.waLink('Bonjour, je souhaite échanger avec un conseiller China Automobile.')"
+              :href="
+                site.waLink(
+                  'Bonjour, je souhaite échanger avec un conseiller China Automobile.',
+                )
+              "
               target="_blank"
               rel="noopener"
               class="btn btn-whatsapp w-full"
@@ -368,10 +440,7 @@ onMounted(async () => {
     </section>
 
     <!-- Section Témoignages Clients Réels -->
-    <section
-      v-if="s.show_testimonials && reviews.length"
-      class="section-block"
-    >
+    <section v-if="s.show_testimonials && reviews.length" class="section-block">
       <div class="container">
         <div class="section-head">
           <div>
@@ -383,14 +452,21 @@ onMounted(async () => {
           </div>
 
           <!-- Notes globales si renseignées -->
-          <div v-if="s.google_rating || s.facebook_rating" class="ratings-pills">
+          <div
+            v-if="s.google_rating || s.facebook_rating"
+            class="ratings-pills"
+          >
             <div v-if="s.google_rating" class="rating-pill">
               <Star :size="14" class="star-icon" fill="currentColor" />
-              <span>Google : <strong>{{ s.google_rating }}/5</strong></span>
+              <span
+                >Google : <strong>{{ s.google_rating }}/5</strong></span
+              >
             </div>
             <div v-if="s.facebook_rating" class="rating-pill">
               <Star :size="14" class="star-icon" fill="currentColor" />
-              <span>Facebook : <strong>{{ s.facebook_rating }}/5</strong></span>
+              <span
+                >Facebook : <strong>{{ s.facebook_rating }}/5</strong></span
+              >
             </div>
           </div>
         </div>
@@ -398,7 +474,13 @@ onMounted(async () => {
         <div class="reviews-grid">
           <div v-for="r in reviews" :key="r.id" class="review-card">
             <div class="review-stars">
-              <Star v-for="n in 5" :key="n" :size="14" class="star-icon" fill="currentColor" />
+              <Star
+                v-for="n in 5"
+                :key="n"
+                :size="14"
+                class="star-icon"
+                fill="currentColor"
+              />
             </div>
             <blockquote class="review-quote">"{{ r.content }}"</blockquote>
             <div class="review-author">

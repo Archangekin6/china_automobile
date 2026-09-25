@@ -2,7 +2,11 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, RouterLink } from "vue-router";
 import { supabase } from "@/lib/supabase";
-import { useSiteStore } from "@/stores/site";
+import {
+  isValidPhoneNumber,
+  normalizePhoneNumber,
+  useSiteStore,
+} from "@/stores/site";
 import {
   Car,
   ChevronRight,
@@ -27,6 +31,7 @@ const route = useRoute();
 
 const car = ref(null);
 const loading = ref(true);
+const loadError = ref("");
 
 // Formulaire de contact / commande
 const showForm = ref(false);
@@ -36,7 +41,10 @@ const sent = ref(false);
 const formError = ref("");
 
 const formatNumber = (n) => new Intl.NumberFormat("fr-FR").format(n);
-const formatPrice = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
+const formatPrice = (n) =>
+  n === null || n === undefined || n === ""
+    ? "Prix sur demande"
+    : new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 
 // Lien WhatsApp personnalisé
 const whatsappLink = computed(() => {
@@ -46,7 +54,10 @@ const whatsappLink = computed(() => {
   );
 });
 
-onMounted(async () => {
+async function loadCar() {
+  loading.value = true;
+  loadError.value = "";
+  car.value = null;
   try {
     const { data, error } = await supabase
       .from("cars")
@@ -54,19 +65,34 @@ onMounted(async () => {
       .eq("id", route.params.id)
       .single();
 
-    if (error) throw error;
+    if (error && error.code !== "PGRST116") throw error;
     car.value = data;
   } catch (err) {
     console.error("Erreur de chargement du véhicule :", err);
+    loadError.value =
+      "Impossible de charger ce véhicule pour le moment. Vérifiez votre connexion puis réessayez.";
   } finally {
     loading.value = false;
   }
-});
+}
+
+onMounted(loadCar);
 
 async function submitOrder() {
   formError.value = "";
+  if (!car.value?.available) {
+    formError.value =
+      "Ce véhicule n'est plus disponible. Utilisez WhatsApp pour demander un modèle équivalent.";
+    return;
+  }
   if (!form.value.customer_name.trim() || !form.value.phone.trim()) {
-    formError.value = "Veuillez renseigner votre nom et votre numéro de téléphone.";
+    formError.value =
+      "Veuillez renseigner votre nom et votre numéro de téléphone.";
+    return;
+  }
+  if (!isValidPhoneNumber(form.value.phone)) {
+    formError.value =
+      "Veuillez saisir un numéro ivoirien valide, par exemple +225 07 00 00 00 00.";
     return;
   }
 
@@ -75,7 +101,7 @@ async function submitOrder() {
     const { error } = await supabase.from("orders").insert({
       car_id: car.value.id,
       customer_name: form.value.customer_name.trim(),
-      phone: form.value.phone.trim(),
+      phone: normalizePhoneNumber(form.value.phone),
       email: form.value.email ? form.value.email.trim() : null,
       message: form.value.message ? form.value.message.trim() : null,
     });
@@ -83,7 +109,8 @@ async function submitOrder() {
     if (error) throw error;
     sent.value = true;
   } catch (err) {
-    formError.value = "Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous joindre sur WhatsApp.";
+    formError.value =
+      "Une erreur est survenue lors de l'envoi. Veuillez réessayer ou nous joindre sur WhatsApp.";
     console.error(err);
   } finally {
     sending.value = false;
@@ -101,7 +128,9 @@ async function submitOrder() {
           <ChevronRight :size="14" class="crumb-sep" />
           <RouterLink to="/voitures">Catalogue</RouterLink>
           <ChevronRight :size="14" class="crumb-sep" />
-          <span v-if="car" class="crumb-active">{{ car.brand }} {{ car.model }}</span>
+          <span v-if="car" class="crumb-active"
+            >{{ car.brand }} {{ car.model }}</span
+          >
           <span v-else class="crumb-active">Détail du véhicule</span>
         </nav>
       </div>
@@ -116,6 +145,18 @@ async function submitOrder() {
     </div>
 
     <!-- Véhicule Introuvable -->
+    <div v-else-if="loadError" class="container not-found-container">
+      <div class="not-found-card">
+        <AlertCircle :size="48" class="text-danger" />
+        <h2>Le véhicule ne peut pas être chargé</h2>
+        <p>{{ loadError }}</p>
+        <button type="button" class="btn btn-primary" @click="loadCar">
+          <ArrowLeft :size="16" />
+          <span>Réessayer</span>
+        </button>
+      </div>
+    </div>
+
     <div v-else-if="!car" class="container not-found-container">
       <div class="not-found-card">
         <AlertCircle :size="48" class="text-danger" />
@@ -152,9 +193,7 @@ async function submitOrder() {
                 <span v-if="car.available" class="badge badge-available">
                   Disponible
                 </span>
-                <span v-else class="badge badge-sold">
-                  Vendu
-                </span>
+                <span v-else class="badge badge-sold"> Vendu </span>
                 <span v-if="car.featured" class="badge badge-featured">
                   <Sparkles :size="12" />
                   Sélection du mois
@@ -183,7 +222,9 @@ async function submitOrder() {
                 </div>
                 <div>
                   <span class="spec-label">Année modèle</span>
-                  <strong class="spec-val">{{ car.year || "Non précisée" }}</strong>
+                  <strong class="spec-val">{{
+                    car.year || "Non précisée"
+                  }}</strong>
                 </div>
               </div>
 
@@ -193,7 +234,9 @@ async function submitOrder() {
                 </div>
                 <div>
                   <span class="spec-label">Transmission</span>
-                  <strong class="spec-val">{{ car.transmission || "Automatique" }}</strong>
+                  <strong class="spec-val">{{
+                    car.transmission || "Automatique"
+                  }}</strong>
                 </div>
               </div>
 
@@ -214,7 +257,11 @@ async function submitOrder() {
                 <div>
                   <span class="spec-label">Kilométrage</span>
                   <strong class="spec-val">
-                    {{ car.mileage ? `${formatNumber(car.mileage)} km` : "0 km (Neuf)" }}
+                    {{
+                      car.mileage
+                        ? `${formatNumber(car.mileage)} km`
+                        : "0 km (Neuf)"
+                    }}
                   </strong>
                 </div>
               </div>
@@ -225,8 +272,11 @@ async function submitOrder() {
                 </div>
                 <div>
                   <span class="spec-label">Statut</span>
-                  <strong class="spec-val" :class="car.available ? 'text-success' : 'text-slate'">
-                    {{ car.available ? "Disponible immédiatement" : "Réservé / Vendu" }}
+                  <strong
+                    class="spec-val"
+                    :class="car.available ? 'text-success' : 'text-slate'"
+                  >
+                    {{ car.available ? "Disponible" : "Vendu / indisponible" }}
                   </strong>
                 </div>
               </div>
@@ -248,24 +298,33 @@ async function submitOrder() {
               <div class="guarantee-box">
                 <ShieldCheck :size="20" class="guarantee-icon" />
                 <div>
-                  <h4>Inspection Technique Avant Expédition</h4>
-                  <p>Contrôle mécanique, électronique et carrosserie certifié.</p>
+                  <h4>Informations disponibles</h4>
+                  <p>
+                    Consultez les caractéristiques et les éléments affichés sur
+                    cette fiche.
+                  </p>
                 </div>
               </div>
 
               <div class="guarantee-box">
                 <FileCheck2 :size="20" class="guarantee-icon" />
                 <div>
-                  <h4>Dédouanement Clé en Main</h4>
-                  <p>Aucune mauvaise surprise : formalités portuaires et douanières prises en charge.</p>
+                  <h4>Prix et statut affichés</h4>
+                  <p>
+                    Le prix et la disponibilité sont présentés lorsqu'ils sont
+                    renseignés.
+                  </p>
                 </div>
               </div>
 
               <div class="guarantee-box">
                 <Ship :size="20" class="guarantee-icon" />
                 <div>
-                  <h4>Acheminement Garanti</h4>
-                  <p>Suivi transparent du fret maritime jusqu'au port d'Abidjan.</p>
+                  <h4>Relation directe</h4>
+                  <p>
+                    Notre équipe répond à vos questions sur le véhicule et son
+                    achat.
+                  </p>
                 </div>
               </div>
             </div>
@@ -277,31 +336,52 @@ async function submitOrder() {
           <div class="commercial-panel">
             <div class="panel-brand-tag">{{ car.brand }}</div>
             <h1 class="panel-title">{{ car.model }}</h1>
-            <div class="panel-year-pill" v-if="car.year">Modèle {{ car.year }}</div>
+            <div class="panel-year-pill" v-if="car.year">
+              Modèle {{ car.year }}
+            </div>
 
             <!-- Prix -->
             <div class="panel-price-box">
               <div class="price-label">Prix commercial</div>
               <div class="price-amount">{{ formatPrice(car.price) }}</div>
-              <div class="price-note">Clé en main à Abidjan • Sans frais cachés</div>
+              <div class="price-note">Prix affiché à titre commercial</div>
             </div>
 
             <!-- Statut d'indisponibilité si vendu -->
             <div v-if="!car.available" class="sold-notice">
               <AlertCircle :size="18" />
-              <span>Ce véhicule a été vendu. Nous pouvons vous commander un modèle équivalent.</span>
+              <span
+                >Ce véhicule n'est plus disponible. Contactez-nous pour obtenir
+                des informations sur les véhicules actuellement proposés.</span
+              >
             </div>
 
             <!-- Boutons d'action immédiats -->
             <div class="panel-actions">
               <button
+                v-if="car.available"
                 type="button"
                 class="btn btn-primary btn-lg w-full"
                 @click="showForm = !showForm"
               >
                 <Send :size="18" />
-                <span>{{ showForm ? "Masquer la demande" : "Faire une demande d'achat" }}</span>
+                <span>{{
+                  showForm
+                    ? "Masquer le formulaire"
+                    : "Demander des informations"
+                }}</span>
               </button>
+
+              <a
+                v-else
+                :href="whatsappLink"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary btn-lg w-full"
+              >
+                <MessageCircle :size="18" />
+                <span>Demander un modèle équivalent</span>
+              </a>
 
               <a
                 :href="whatsappLink"
@@ -313,7 +393,10 @@ async function submitOrder() {
                 <span>Échanger sur WhatsApp</span>
               </a>
 
-              <a :href="site.phoneHref" class="btn btn-outline btn-lg w-full call-direct-btn">
+              <a
+                :href="site.phoneHref"
+                class="btn btn-outline btn-lg w-full call-direct-btn"
+              >
                 <Phone :size="18" />
                 <span>Appeler : {{ site.settings.phone }}</span>
               </a>
@@ -324,49 +407,72 @@ async function submitOrder() {
               <div v-if="showForm && !sent" class="order-form-container">
                 <div class="form-header">
                   <h3>Formulaire de Demande</h3>
-                  <p>Aucun paiement en ligne requis. Notre équipe vous recontacte sous 24h.</p>
+                  <p>
+                    Aucun paiement en ligne requis. Notre équipe vous recontacte
+                    sous 24h.
+                  </p>
                 </div>
 
                 <form @submit.prevent="submitOrder" class="order-form">
                   <div class="form-group">
-                    <label class="form-label">Nom et prénom *</label>
+                    <label class="form-label" for="order-name"
+                      >Nom et prénom *</label
+                    >
                     <input
+                      id="order-name"
                       v-model="form.customer_name"
                       type="text"
                       class="form-input"
                       placeholder="Ex: Kouassi Emmanuel"
+                      autocomplete="name"
+                      maxlength="120"
                       required
                     />
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label">Numéro de téléphone *</label>
+                    <label class="form-label" for="order-phone"
+                      >Numéro de téléphone *</label
+                    >
                     <input
+                      id="order-phone"
                       v-model="form.phone"
                       type="tel"
                       class="form-input"
                       placeholder="Ex: +225 07 00 00 00 00"
+                      autocomplete="tel"
+                      inputmode="tel"
+                      maxlength="20"
                       required
                     />
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label">Email (facultatif)</label>
+                    <label class="form-label" for="order-email"
+                      >Email (facultatif)</label
+                    >
                     <input
+                      id="order-email"
                       v-model="form.email"
                       type="email"
                       class="form-input"
                       placeholder="votre.email@exemple.ci"
+                      autocomplete="email"
+                      maxlength="160"
                     />
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label">Précisions ou questions (facultatif)</label>
+                    <label class="form-label" for="order-message"
+                      >Précisions ou questions (facultatif)</label
+                    >
                     <textarea
+                      id="order-message"
                       v-model="form.message"
                       class="form-textarea"
                       rows="3"
-                      placeholder="Ex: Disponibilité pour essai, modalités d'importation..."
+                      placeholder="Ex: disponibilité, caractéristiques ou prix..."
+                      maxlength="2000"
                     ></textarea>
                   </div>
 
@@ -375,9 +481,17 @@ async function submitOrder() {
                     <span>{{ formError }}</span>
                   </div>
 
-                  <button type="submit" class="btn btn-primary w-full" :disabled="sending">
+                  <button
+                    type="submit"
+                    class="btn btn-primary w-full"
+                    :disabled="sending"
+                  >
                     <Send :size="16" />
-                    <span>{{ sending ? "Transmission de votre demande..." : "Envoyer ma demande" }}</span>
+                    <span>{{
+                      sending
+                        ? "Transmission de votre demande..."
+                        : "Envoyer ma demande"
+                    }}</span>
                   </button>
                 </form>
               </div>
@@ -390,10 +504,19 @@ async function submitOrder() {
               </div>
               <h3>Demande transmise avec succès</h3>
               <p>
-                Votre intérêt pour le véhicule <strong>{{ car.brand }} {{ car.model }}</strong> a bien été enregistré. Notre conseiller commercial vous contactera rapidement au <strong>{{ form.phone }}</strong>.
+                Votre intérêt pour le véhicule
+                <strong>{{ car.brand }} {{ car.model }}</strong> a bien été
+                enregistré. Notre conseiller commercial vous contactera
+                rapidement au <strong>{{ form.phone }}</strong
+                >.
               </p>
               <div class="success-actions">
-                <a :href="whatsappLink" target="_blank" rel="noopener" class="btn btn-sm btn-whatsapp">
+                <a
+                  :href="whatsappLink"
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-sm btn-whatsapp"
+                >
                   Poursuivre sur WhatsApp
                 </a>
               </div>
@@ -403,11 +526,16 @@ async function submitOrder() {
             <div class="commercial-footer-notes">
               <div class="note-item">
                 <ShieldCheck :size="16" class="note-icon" />
-                <span>Véhicule contrôlé et conforme aux normes d'importation.</span>
+                <span
+                  >Informations commerciales présentées selon les données
+                  disponibles.</span
+                >
               </div>
               <div class="note-item">
                 <FileCheck2 :size="16" class="note-icon" />
-                <span>Facturation proforma officielle délivrée sur demande.</span>
+                <span
+                  >Facturation proforma officielle délivrée sur demande.</span
+                >
               </div>
             </div>
           </div>
@@ -900,8 +1028,15 @@ async function submitOrder() {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.95); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
 }
 
 @media (max-width: 960px) {

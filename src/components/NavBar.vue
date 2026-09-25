@@ -49,7 +49,6 @@ onUnmounted(() => {
 
 <template>
   <header class="header" :class="{ scrolled: isScrolled }">
-
     <!-- Barre principale de navigation -->
     <div class="navbar-main">
       <div class="container bar">
@@ -61,35 +60,65 @@ onUnmounted(() => {
           </div>
           <div class="logo-text">
             <span class="brand-title">CHINA AUTOMOBILE</span>
-            <span class="brand-subtitle">ABIDJAN • IMPORT & VENTE</span>
+            <span class="brand-subtitle">ABIDJAN • VENTE AUTOMOBILE</span>
           </div>
         </RouterLink>
 
         <!-- Liens Desktop -->
         <nav class="desktop-nav" aria-label="Navigation principale">
-          <RouterLink to="/" class="nav-link" active-class="nav-link-active" exact>
+          <RouterLink
+            to="/"
+            class="nav-link"
+            active-class="nav-link-active"
+            exact
+          >
             Accueil
           </RouterLink>
-          <RouterLink to="/voitures" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/voitures"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Véhicules
           </RouterLink>
-          <RouterLink to="/marques" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/marques"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Marques
           </RouterLink>
-          <RouterLink to="/services" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/services"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Services
           </RouterLink>
-          <RouterLink to="/a-propos" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/a-propos"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             À propos
           </RouterLink>
-          <RouterLink to="/contact" class="nav-link" active-class="nav-link-active">
+          <RouterLink
+            to="/contact"
+            class="nav-link"
+            active-class="nav-link-active"
+          >
             Contact
           </RouterLink>
         </nav>
 
         <!-- Actions Desktop -->
         <div class="nav-actions">
-          <a :href="site.phoneHref" class="phone-cta" title="Nous contacter par téléphone">
+          <a
+            v-if="site.hasPhone"
+            :href="site.phoneHref"
+            class="phone-cta"
+            title="Nous contacter par téléphone"
+          >
             <div class="phone-icon-wrap">
               <Phone :size="16" />
             </div>
@@ -100,13 +129,18 @@ onUnmounted(() => {
           </a>
 
           <a
-            :href="site.waLink('Bonjour, je souhaite être conseillé pour l\'achat d\'un véhicule.')"
+            v-if="site.hasWhatsApp"
+            :href="
+              site.waLink(
+                'Bonjour, je souhaite être conseillé pour l\'achat d\'un véhicule.',
+              )
+            "
             target="_blank"
             rel="noopener"
             class="btn btn-sm btn-whatsapp wa-quick-btn"
           >
             <MessageCircle :size="16" />
-            <span>Devis Express</span>
+            <span>Demander un devis</span>
           </a>
 
           <!-- Hamburger Button (Mobile) -->
@@ -114,7 +148,7 @@ onUnmounted(() => {
             type="button"
             class="hamburger-btn"
             :aria-expanded="isMenuOpen"
-            aria-label="Ouvrir le menu"
+            :aria-label="isMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'"
             @click="toggleMenu"
           >
             <Menu v-if="!isMenuOpen" :size="24" />
@@ -133,7 +167,13 @@ onUnmounted(() => {
     ></div>
 
     <transition name="drawer">
-      <div v-if="isMenuOpen" class="mobile-drawer" role="dialog" aria-label="Menu principal">
+      <div
+        v-if="isMenuOpen"
+        class="mobile-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu principal"
+      >
         <div class="drawer-header">
           <div class="logo">
             <div class="logo-symbol" aria-hidden="true">
@@ -183,7 +223,7 @@ onUnmounted(() => {
             <RouterLink to="/services" class="drawer-link" @click="closeMenu">
               <div class="link-label">
                 <Wrench :size="18" />
-                <span>Services & Import</span>
+                <span>Véhicules & Informations</span>
               </div>
               <ChevronRight :size="16" class="link-arrow" />
             </RouterLink>
@@ -206,7 +246,11 @@ onUnmounted(() => {
           </nav>
 
           <div class="drawer-footer">
-            <a :href="site.phoneHref" class="drawer-contact-card">
+            <a
+              v-if="site.hasPhone"
+              :href="site.phoneHref"
+              class="drawer-contact-card"
+            >
               <Phone :size="18" class="text-brand" />
               <div>
                 <span class="label">Appelez-nous directement</span>
@@ -215,7 +259,12 @@ onUnmounted(() => {
             </a>
 
             <a
-              :href="site.waLink('Bonjour, je souhaite des informations sur vos véhicules.')"
+              v-if="site.hasWhatsApp"
+              :href="
+                site.waLink(
+                  'Bonjour, je souhaite des informations sur vos véhicules.',
+                )
+              "
               target="_blank"
               rel="noopener"
               class="btn btn-whatsapp w-full"
@@ -237,7 +286,9 @@ onUnmounted(() => {
   z-index: 50;
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-slate-200);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .header.scrolled {

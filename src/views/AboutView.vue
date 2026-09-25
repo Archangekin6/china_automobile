@@ -34,9 +34,13 @@ const site = useSiteStore();
           <Building2 :size="14" />
           <span>Entreprise & Engagements</span>
         </div>
-        <h1 class="page-title">China Automobile : Votre Concessionnaire Spécialisé à Abidjan</h1>
+        <h1 class="page-title">
+          China Automobile : Votre Concessionnaire Spécialisé à Abidjan
+        </h1>
         <p class="page-lead">
-          Nous connectons les particuliers et entreprises de Côte d'Ivoire aux constructeurs automobiles les plus innovants du monde, avec une exigence absolue de transparence et de fiabilité.
+          Nous connectons les particuliers et entreprises de Côte d'Ivoire aux
+          constructeurs automobiles les plus innovants du monde, avec une
+          exigence absolue de transparence et de fiabilité.
         </p>
       </div>
     </header>
@@ -49,13 +53,23 @@ const site = useSiteStore();
             <span class="section-tag">Notre Histoire</span>
             <h2>Pionniers de la Mobilité Chinoise Moderne en Côte d'Ivoire</h2>
             <p class="lead-text">
-              L'industrie automobile a connu un basculement historique. Aujourd'hui, les constructeurs chinois conçoivent les véhicules les plus technologiquement avancés, les plus sécurisés et les plus efficients du marché mondial.
+              L'industrie automobile a connu un basculement historique.
+              Aujourd'hui, les constructeurs chinois conçoivent les véhicules
+              les plus technologiquement avancés, les plus sécurisés et les plus
+              efficients du marché mondial.
             </p>
             <p>
-              Face à ce constat, <strong>China Automobile</strong> a été fondée avec une mission claire : démocratiser l'accès aux véhicules neufs et occasions récentes haut de gamme des constructeurs chinois de référence (BYD, Chery, Haval, Geely, Changan, Jetour) pour les automobilistes et professionnels ivoiriens.
+              Face à ce constat, <strong>China Automobile</strong> a été fondée
+              avec une mission claire : démocratiser l'accès aux véhicules neufs
+              et occasions récentes haut de gamme des constructeurs chinois de
+              référence (BYD, Chery, Haval, Geely, Changan, Jetour) pour les
+              automobilistes et professionnels ivoiriens.
             </p>
             <p>
-              Plutôt que d'acheter à l'aveugle ou de subir des démarches portuaires complexes, nous offrons une structure locale professionnelle basée à Abidjan qui prend en charge l'ensemble de la chaîne : sourcing usine, contrôle technique certifié, acheminement maritime sécurisé, dédouanement officiel et immatriculation.
+              Basée à Abidjan, China Automobile présente les véhicules de
+              marques chinoises proposés en Côte d'Ivoire avec des informations
+              claires sur leurs caractéristiques, leurs prix lorsqu'ils sont
+              disponibles et leur statut commercial.
             </p>
           </div>
 
@@ -66,7 +80,10 @@ const site = useSiteStore();
               </div>
               <div>
                 <h4>Transparence Tarifaire Totale</h4>
-                <p>Nos tarifs sont affichés clé en main. Aucun frais caché, aucune mauvaise surprise douanière à l'arrivée.</p>
+                <p>
+                  Les prix sont affichés lorsqu'ils sont disponibles et les
+                  informations commerciales sont présentées clairement.
+                </p>
               </div>
             </div>
 
@@ -76,7 +93,10 @@ const site = useSiteStore();
               </div>
               <div>
                 <h4>Qualité & Inspection Certifiée</h4>
-                <p>Chaque véhicule fait l'objet d'un rapport de contrôle exhaustif avant embarquement en Chine.</p>
+                <p>
+                  Les caractéristiques et les informations disponibles sont
+                  présentées sur chaque fiche véhicule.
+                </p>
               </div>
             </div>
 
@@ -85,8 +105,11 @@ const site = useSiteStore();
                 <Users :size="24" />
               </div>
               <div>
-                <h4>Accompagnement Physique à Abidjan</h4>
-                <p>Une équipe réactive, disponible par téléphone, WhatsApp et en personne pour vous conseiller.</p>
+                <h4>Relation directe à Abidjan</h4>
+                <p>
+                  Une équipe réactive, disponible par téléphone, WhatsApp et
+                  formulaire pour répondre à vos questions.
+                </p>
               </div>
             </div>
           </div>
@@ -99,16 +122,19 @@ const site = useSiteStore();
           <span class="section-tag">Nos Engagements</span>
           <h2>Une Éthique Commerciale Sans Compromis</h2>
           <p class="section-desc">
-            Ce qui fait la réputation de China Automobile auprès de nos clients particuliers et flottes d'entreprises.
+            Ce qui fait la réputation de China Automobile auprès de nos clients
+            particuliers et flottes d'entreprises.
           </p>
         </div>
 
         <div class="values-grid">
           <div class="value-card">
             <div class="value-number">01</div>
-            <h3>Conformité Légale & Douanière</h3>
+            <h3>Informations transparentes</h3>
             <p>
-              Tous nos véhicules sont dédouanés dans les règles strictes de la douane ivoirienne. Nous fournissons tous les reçus de dédouanement et certificats nécessaires à une immatriculation sereine.
+              Nous présentons les informations disponibles sur les véhicules,
+              leurs prix et leur statut afin de faciliter une décision d'achat
+              éclairée.
             </p>
           </div>
 
@@ -116,7 +142,9 @@ const site = useSiteStore();
             <div class="value-number">02</div>
             <h3>Sécurité & Standards Internationaux</h3>
             <p>
-              Nous sélectionnons uniquement des modèles répondant aux normes de crash-tests les plus strictes (C-NCAP et Euro NCAP 5 étoiles), dotés d'airbags multiples et d'assistances à la conduite de série.
+              Nous sélectionnons uniquement des modèles répondant aux normes de
+              crash-tests les plus strictes (C-NCAP et Euro NCAP 5 étoiles),
+              dotés d'airbags multiples et d'assistances à la conduite de série.
             </p>
           </div>
 
@@ -124,7 +152,10 @@ const site = useSiteStore();
             <div class="value-number">03</div>
             <h3>Adaptation au Contexte Local</h3>
             <p>
-              Nos conseillers vous orientent vers des modèles dont la garde au sol, la filtration et les motorisations correspondent exactement à vos trajets (urbains à Abidjan ou trajets intérieurs de la Côte d'Ivoire).
+              Nos conseillers vous orientent vers des modèles dont la garde au
+              sol, la filtration et les motorisations correspondent exactement à
+              vos trajets (urbains à Abidjan ou trajets intérieurs de la Côte
+              d'Ivoire).
             </p>
           </div>
 
@@ -132,7 +163,9 @@ const site = useSiteStore();
             <div class="value-number">04</div>
             <h3>Disponibilité des Pièces & Maintenance</h3>
             <p>
-              L'achat d'un véhicule s'inscrit dans la durée. Nous facilitons l'approvisionnement en pièces de rechange d'origine et conseillons nos clients sur les centres de maintenance qualifiés.
+              L'achat d'un véhicule s'inscrit dans la durée. Nous facilitons
+              l'approvisionnement en pièces de rechange d'origine et conseillons
+              nos clients sur les centres de maintenance qualifiés.
             </p>
           </div>
         </div>
@@ -145,7 +178,9 @@ const site = useSiteStore();
             <span class="banner-tag">Rencontrez-Nous</span>
             <h2>Venez Découvrir Nos Véhicules à Abidjan</h2>
             <p>
-              Vous souhaitez voir un véhicule en stock, échanger sur un projet d'importation sur-mesure ou obtenir une estimation détaillée ? Notre équipe vous accueille avec plaisir.
+              Vous souhaitez voir un véhicule en stock, obtenir des informations
+              sur un modèle ou demander une estimation commerciale ? Notre
+              équipe vous accueille avec plaisir.
             </p>
 
             <div class="banner-contacts">
@@ -162,7 +197,11 @@ const site = useSiteStore();
 
           <div class="banner-action-col">
             <a
-              :href="site.waLink('Bonjour, je souhaite convenir d\'un rendez-vous pour visiter votre showroom à Abidjan.')"
+              :href="
+                site.waLink(
+                  'Bonjour, je souhaite convenir d\'un rendez-vous pour visiter votre showroom à Abidjan.',
+                )
+              "
               target="_blank"
               rel="noopener"
               class="btn btn-whatsapp btn-lg w-full"
@@ -171,7 +210,10 @@ const site = useSiteStore();
               <span>Prendre rendez-vous sur WhatsApp</span>
             </a>
 
-            <RouterLink to="/voitures" class="btn btn-outline-white btn-lg w-full">
+            <RouterLink
+              to="/voitures"
+              class="btn btn-outline-white btn-lg w-full"
+            >
               <span>Explorer le catalogue en ligne</span>
               <ArrowRight :size="16" />
             </RouterLink>

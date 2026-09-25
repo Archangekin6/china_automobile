@@ -59,7 +59,8 @@ async function save() {
     if (err) throw err;
 
     await site.load();
-    message.value = "Réglages enregistrés et appliqués avec succès sur la vitrine.";
+    message.value =
+      "Réglages enregistrés et appliqués avec succès sur la vitrine.";
   } catch (e) {
     error.value = "Erreur lors de l'enregistrement : " + e.message;
   } finally {
@@ -73,7 +74,8 @@ async function save() {
     <!-- En-tête -->
     <div class="header-intro">
       <p class="intro-desc">
-        Personnalisez les coordonnées commerciales de China Automobile, le bandeau d'accueil et les sections visibles sur la vitrine publique.
+        Personnalisez les coordonnées commerciales de China Automobile, le
+        bandeau d'accueil et les sections visibles sur la vitrine publique.
       </p>
     </div>
 
@@ -85,7 +87,10 @@ async function save() {
         </div>
         <div>
           <h3>Coordonnées Commerciales & Contact</h3>
-          <p>Ces numéros et adresses s'affichent dans la barre de navigation et dans le pied de page.</p>
+          <p>
+            Ces numéros et adresses s'affichent dans la barre de navigation et
+            dans le pied de page.
+          </p>
         </div>
       </div>
 
@@ -99,7 +104,9 @@ async function save() {
               class="form-input"
               placeholder="+225 07 00 00 00 00"
             />
-            <span class="field-hint">Format avec indicatif pays pour lisibilité client.</span>
+            <span class="field-hint"
+              >Format avec indicatif pays pour lisibilité client.</span
+            >
           </div>
 
           <div class="form-group">
@@ -110,7 +117,9 @@ async function save() {
               class="form-input"
               placeholder="2250700000000"
             />
-            <span class="field-hint">Chiffres uniquement avec indicatif (ex: 2250700000000).</span>
+            <span class="field-hint"
+              >Chiffres uniquement avec indicatif (ex: 2250700000000).</span
+            >
           </div>
         </div>
 
@@ -134,7 +143,10 @@ async function save() {
         </div>
         <div>
           <h3>Bandeau d'Accueil Principal (Hero)</h3>
-          <p>Titre accrocheur et photographie de couverture pour la première impression des visiteurs.</p>
+          <p>
+            Titre accrocheur et photographie de couverture pour la première
+            impression des visiteurs.
+          </p>
         </div>
       </div>
 
@@ -146,13 +158,22 @@ async function save() {
 
         <div class="form-group">
           <label class="form-label">Sous-titre explicatif</label>
-          <textarea v-model="form.hero_subtitle" rows="2" class="form-textarea"></textarea>
+          <textarea
+            v-model="form.hero_subtitle"
+            rows="2"
+            class="form-textarea"
+          ></textarea>
         </div>
 
         <div class="hero-photo-config">
           <div class="hero-preview-col">
             <div class="hero-preview-frame">
-              <img v-if="heroPreview" :src="heroPreview" alt="Aperçu bandeau" class="hero-img" />
+              <img
+                v-if="heroPreview"
+                :src="heroPreview"
+                alt="Aperçu bandeau"
+                class="hero-img"
+              />
               <div v-else class="hero-no-img">
                 <ImageIcon :size="32" />
                 <span>Image par défaut du thème</span>
@@ -173,7 +194,8 @@ async function save() {
               />
             </label>
             <span class="field-hint">
-              Format paysage recommandé (1920x1080 px). Une superposition sombre automatique garantit la lisibilité des textes.
+              Format paysage recommandé (1920x1080 px). Une superposition sombre
+              automatique garantit la lisibilité des textes.
             </span>
           </div>
         </div>
@@ -188,7 +210,10 @@ async function save() {
         </div>
         <div>
           <h3>Paramètres des Sections Vitrine</h3>
-          <p>Contrôlez l'affichage et les titres des blocs de véhicules sur la page d'accueil.</p>
+          <p>
+            Contrôlez l'affichage et les titres des blocs de véhicules sur la
+            page d'accueil.
+          </p>
         </div>
       </div>
 
@@ -199,18 +224,28 @@ async function save() {
             <label class="custom-checkbox">
               <input type="checkbox" v-model="form.show_latest" />
               <span class="checkbox-box"></span>
-              <span class="checkbox-text">Afficher la section "Arrivages récents"</span>
+              <span class="checkbox-text"
+                >Afficher la section "Arrivages récents"</span
+              >
             </label>
           </div>
 
           <div v-if="form.show_latest" class="grid-2 module-fields">
             <div class="form-group">
               <label class="form-label">Titre du bloc</label>
-              <input v-model="form.latest_title" type="text" class="form-input" />
+              <input
+                v-model="form.latest_title"
+                type="text"
+                class="form-input"
+              />
             </div>
             <div class="form-group">
               <label class="form-label">Sous-titre</label>
-              <input v-model="form.latest_subtitle" type="text" class="form-input" />
+              <input
+                v-model="form.latest_subtitle"
+                type="text"
+                class="form-input"
+              />
             </div>
           </div>
         </div>
@@ -221,16 +256,24 @@ async function save() {
             <label class="custom-checkbox">
               <input type="checkbox" v-model="form.show_budget" />
               <span class="checkbox-box"></span>
-              <span class="checkbox-text">Afficher la sélection "Petits budgets"</span>
+              <span class="checkbox-text"
+                >Afficher la sélection "Petits budgets"</span
+              >
             </label>
           </div>
 
           <div v-if="form.show_budget" class="module-fields">
             <div class="form-group">
               <label class="form-label">Plafond tarifaire (FCFA)</label>
-              <input v-model="form.budget_max" type="number" step="500000" class="form-input" />
+              <input
+                v-model="form.budget_max"
+                type="number"
+                step="500000"
+                class="form-input"
+              />
               <span class="field-hint">
-                Les véhicules en vente sous ce montant s'afficheront automatiquement dans ce bloc.
+                Les véhicules en vente sous ce montant s'afficheront
+                automatiquement dans ce bloc.
               </span>
             </div>
           </div>
@@ -242,14 +285,20 @@ async function save() {
             <label class="custom-checkbox">
               <input type="checkbox" v-model="form.show_brands" />
               <span class="checkbox-box"></span>
-              <span class="checkbox-text">Afficher la section des marques partenaires</span>
+              <span class="checkbox-text"
+                >Afficher la section des marques partenaires</span
+              >
             </label>
           </div>
 
           <div v-if="form.show_brands" class="module-fields">
             <div class="form-group">
               <label class="form-label">Titre du bloc marques</label>
-              <input v-model="form.brands_title" type="text" class="form-input" />
+              <input
+                v-model="form.brands_title"
+                type="text"
+                class="form-input"
+              />
             </div>
           </div>
         </div>
@@ -260,7 +309,9 @@ async function save() {
             <label class="custom-checkbox">
               <input type="checkbox" v-model="form.show_testimonials" />
               <span class="checkbox-box"></span>
-              <span class="checkbox-text">Afficher les avis clients sur l'accueil</span>
+              <span class="checkbox-text"
+                >Afficher les avis clients sur l'accueil</span
+              >
             </label>
           </div>
 
@@ -268,11 +319,19 @@ async function save() {
             <div class="grid-2">
               <div class="form-group">
                 <label class="form-label">Titre du bloc</label>
-                <input v-model="form.testimonials_title" type="text" class="form-input" />
+                <input
+                  v-model="form.testimonials_title"
+                  type="text"
+                  class="form-input"
+                />
               </div>
               <div class="form-group">
                 <label class="form-label">Sous-titre</label>
-                <input v-model="form.testimonials_subtitle" type="text" class="form-input" />
+                <input
+                  v-model="form.testimonials_subtitle"
+                  type="text"
+                  class="form-input"
+                />
               </div>
             </div>
 
@@ -301,15 +360,18 @@ async function save() {
       </div>
     </section>
 
-    <!-- Section 4 : Processus de Commande (Étapes) -->
+    <!-- Section 4 : Parcours d'achat (Étapes) -->
     <section class="admin-card-section">
       <div class="card-section-head">
         <div class="head-icon-wrap">
           <Sparkles :size="18" />
         </div>
         <div>
-          <h3>Processus d'Achat & Importation (Étapes)</h3>
-          <p>Détaillez les étapes de la commande pour rassurer les clients sur la procédure.</p>
+          <h3>Parcours d'achat (Étapes)</h3>
+          <p>
+            Détaillez les étapes de découverte, de demande d'informations et
+            d'achat.
+          </p>
         </div>
       </div>
 
@@ -328,7 +390,11 @@ async function save() {
             </div>
             <div class="form-group">
               <label class="form-label">Explication</label>
-              <textarea v-model="step.text" rows="2" class="form-textarea"></textarea>
+              <textarea
+                v-model="step.text"
+                rows="2"
+                class="form-textarea"
+              ></textarea>
             </div>
           </div>
         </div>
@@ -351,7 +417,11 @@ async function save() {
 
         <button type="submit" class="btn btn-primary" :disabled="saving">
           <Save :size="16" />
-          <span>{{ saving ? "Enregistrement en cours..." : "Enregistrer les modifications" }}</span>
+          <span>{{
+            saving
+              ? "Enregistrement en cours..."
+              : "Enregistrer les modifications"
+          }}</span>
         </button>
       </div>
     </div>

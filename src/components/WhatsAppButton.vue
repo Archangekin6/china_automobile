@@ -7,7 +7,12 @@ const site = useSiteStore();
 
 <template>
   <a
-    :href="site.waLink('Bonjour China Automobile, je souhaite des informations sur l\'importation et la vente de véhicules.')"
+    v-if="site.hasWhatsApp"
+    :href="
+      site.waLink(
+        'Bonjour China Automobile, je souhaite des informations sur vos véhicules.',
+      )
+    "
     target="_blank"
     rel="noopener"
     class="wa-float"

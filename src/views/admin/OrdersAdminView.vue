@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { supabase } from "@/lib/supabase";
-import { useSiteStore } from "@/stores/site";
+import { normalizePhoneNumber, useSiteStore } from "@/stores/site";
 import {
   ClipboardList,
   Search,
@@ -20,6 +20,7 @@ import {
 const site = useSiteStore();
 const orders = ref([]);
 const loading = ref(true);
+const errorMsg = ref("");
 const searchQuery = ref("");
 const selectedStatus = ref("all");
 
@@ -32,6 +33,7 @@ const statuses = [
 
 async function loadOrders() {
   loading.value = true;
+  errorMsg.value = "";
   try {
     const { data, error } = await supabase
       .from("orders")
@@ -42,6 +44,8 @@ async function loadOrders() {
     orders.value = data || [];
   } catch (err) {
     console.error("Erreur de chargement des commandes :", err);
+    errorMsg.value =
+      "Impossible de charger les demandes. Vérifiez votre connexion puis réessayez.";
   } finally {
     loading.value = false;
   }
@@ -74,11 +78,18 @@ const formatDate = (d) => {
   });
 };
 
-const formatPrice = (n) => (n ? new Intl.NumberFormat("fr-FR").format(n) + " FCFA" : "");
+const formatPrice = (n) =>
+  n ? new Intl.NumberFormat("fr-FR").format(n) + " FCFA" : "";
 
 // Compteurs de statuts
 const statusCounts = computed(() => {
-  const counts = { all: orders.value.length, nouveau: 0, contacté: 0, confirmé: 0, annulé: 0 };
+  const counts = {
+    all: orders.value.length,
+    nouveau: 0,
+    contacté: 0,
+    confirmé: 0,
+    annulé: 0,
+  };
   for (const o of orders.value) {
     if (counts[o.status] !== undefined) {
       counts[o.status]++;
@@ -93,17 +104,22 @@ const filteredOrders = computed(() => {
     const q = searchQuery.value.trim().toLowerCase();
     const customer = (o.customer_name || "").toLowerCase();
     const phone = (o.phone || "").toLowerCase();
-    const carText = o.cars ? `${o.cars.brand} ${o.cars.model}`.toLowerCase() : "";
+    const carText = o.cars
+      ? `${o.cars.brand} ${o.cars.model}`.toLowerCase()
+      : "";
 
-    const matchesSearch = !q || customer.includes(q) || phone.includes(q) || carText.includes(q);
-    const matchesStatus = selectedStatus.value === "all" || o.status === selectedStatus.value;
+    const matchesSearch =
+      !q || customer.includes(q) || phone.includes(q) || carText.includes(q);
+    const matchesStatus =
+      selectedStatus.value === "all" || o.status === selectedStatus.value;
 
     return matchesSearch && matchesStatus;
   });
 });
 
 function getWhatsAppCustomerLink(order) {
-  const cleanPhone = (order.phone || "").replace(/\D/g, "");
+  const cleanPhone = normalizePhoneNumber(order.phone);
+  if (!cleanPhone) return "";
   const text = `Bonjour ${order.customer_name}, je vous contacte depuis China Automobile suite à votre demande pour le véhicule ${order.cars ? `${order.cars.brand} ${order.cars.model}` : ""}.`;
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
@@ -186,10 +202,26 @@ onMounted(() => {
         <span>Chargement des commandes en cours...</span>
       </div>
 
+      <div v-else-if="errorMsg" class="table-empty" role="alert">
+        <AlertCircle :size="36" class="text-danger" />
+        <h3>Les demandes sont momentanément indisponibles</h3>
+        <p>{{ errorMsg }}</p>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline"
+          @click="loadOrders"
+        >
+          Réessayer
+        </button>
+      </div>
+
       <div v-else-if="filteredOrders.length === 0" class="table-empty">
         <ClipboardList :size="36" class="text-slate" />
         <h3>Aucune demande enregistrée</h3>
-        <p>Les demandes d'achat soumises sur la vitrine apparaîtront ici avec les coordonnées complètes.</p>
+        <p>
+          Les demandes d'achat soumises sur la vitrine apparaîtront ici avec les
+          coordonnées complètes.
+        </p>
       </div>
 
       <div v-else class="table-responsive">
@@ -222,11 +254,16 @@ onMounted(() => {
               <td>
                 <div class="contacts-cell">
                   <div class="phone-link-wrap">
-                    <a :href="`tel:${o.phone}`" class="contact-phone" title="Appeler directement">
+                    <a
+                      :href="`tel:${o.phone}`"
+                      class="contact-phone"
+                      title="Appeler directement"
+                    >
                       <Phone :size="13" />
                       <span>{{ o.phone }}</span>
                     </a>
                     <a
+                      v-if="getWhatsAppCustomerLink(o)"
                       :href="getWhatsAppCustomerLink(o)"
                       target="_blank"
                       rel="noopener"
@@ -249,7 +286,8 @@ onMounted(() => {
                   <Car :size="14" class="cell-icon" />
                   <div>
                     <strong class="car-demand-name">
-                      {{ o.cars.brand }} {{ o.cars.model }} {{ o.cars.year || "" }}
+                      {{ o.cars.brand }} {{ o.cars.model }}
+                      {{ o.cars.year || "" }}
                     </strong>
                     <span v-if="o.cars.price" class="car-demand-price">
                       {{ formatPrice(o.cars.price) }}

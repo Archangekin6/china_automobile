@@ -14,7 +14,10 @@ defineProps({
 });
 
 const formatNumber = (n) => new Intl.NumberFormat("fr-FR").format(n);
-const formatPrice = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
+const formatPrice = (n) =>
+  n === null || n === undefined || n === ""
+    ? "Prix sur demande"
+    : new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 </script>
 
 <template>
@@ -61,7 +64,13 @@ const formatPrice = (n) => new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 
       <div class="price-row">
         <div class="price-value">{{ formatPrice(car.price) }}</div>
-        <div class="price-note">Clé en main</div>
+        <div class="price-note">
+          {{
+            car.price === null || car.price === undefined || car.price === ""
+              ? "Contactez-nous pour le prix"
+              : "Prix affiché"
+          }}
+        </div>
       </div>
 
       <!-- Spécifications techniques -->

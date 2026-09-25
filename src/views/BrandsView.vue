@@ -21,13 +21,15 @@ const site = useSiteStore();
 const brands = ref([]);
 const cars = ref([]);
 const loading = ref(true);
+const errorMsg = ref("");
 const searchQuery = ref("");
 
 // Données descriptives enrichies pour les constructeurs chinois majeurs
 const brandMeta = {
   byd: {
     origin: "Shenzhen, Chine",
-    specialty: "Leader mondial des véhicules électriques & hybrides rechargeables",
+    specialty:
+      "Leader mondial des véhicules électriques & hybrides rechargeables",
     badge: "Mobilité Électrique",
     desc: "BYD (Build Your Dreams) est le numéro 1 mondial des véhicules à énergie nouvelle. Leurs SUV (Atto 3, Song Plus, Tang) et berlines (Seal, Han) intègrent la célèbre batterie Blade ultrarécurisée.",
   },
@@ -39,13 +41,15 @@ const brandMeta = {
   },
   haval: {
     origin: "Baoding, Chine",
-    specialty: "Spécialiste mondial des SUV & 4x4 tout-terrain (Great Wall Motors)",
+    specialty:
+      "Spécialiste mondial des SUV & 4x4 tout-terrain (Great Wall Motors)",
     badge: "Leader SUV",
     desc: "Marque premium du géant Great Wall Motor dédiée exclusivement aux SUV. Le Haval H6 est l'un des SUV les plus vendus au monde, réputé pour sa robustesse et sa sécurité active.",
   },
   geely: {
     origin: "Hangzhou, Chine",
-    specialty: "Design scandinave & technologies de pointe (Propriétaire de Volvo)",
+    specialty:
+      "Design scandinave & technologies de pointe (Propriétaire de Volvo)",
     badge: "Ingénierie Globale",
     desc: "Maison mère de Volvo Cars, Zeekr et Polestar. Les modèles Geely (Coolray, Tugella, Monjaro) bénéficient des plateformes châssis et des standards de sécurité européens.",
   },
@@ -65,16 +69,22 @@ const brandMeta = {
 
 async function loadData() {
   loading.value = true;
+  errorMsg.value = "";
   try {
-    const [bRes, cRes] = await Promise.all([
+    const results = await Promise.all([
       supabase.from("brands").select("*").order("name"),
       supabase.from("cars").select("id, brand, available"),
     ]);
+    const failed = results.find((result) => result.error);
+    if (failed?.error) throw failed.error;
 
+    const [bRes, cRes] = results;
     brands.value = bRes.data || [];
     cars.value = cRes.data || [];
   } catch (err) {
     console.error("Erreur de chargement des marques :", err);
+    errorMsg.value =
+      "Les marques partenaires ne sont pas disponibles pour le moment. Réessayez dans quelques instants.";
   } finally {
     loading.value = false;
   }
@@ -132,7 +142,10 @@ onMounted(loadData);
           </div>
           <h1 class="page-title">Les Grandes Marques Automobiles Chinoises</h1>
           <p class="page-lead">
-            China Automobile sélectionne pour vous les fleurons de l'industrie automobile de Chine. Découvrez leurs gammes de SUV, berlines et véhicules électriques disponibles immédiatement ou sur commande à Abidjan.
+            China Automobile sélectionne pour vous les fleurons de l'industrie
+            automobile de Chine. Découvrez leurs gammes de SUV, berlines et
+            véhicules électriques proposés par China Automobile en Côte
+            d'Ivoire.
           </p>
 
           <!-- Barre de recherche de constructeur -->
@@ -153,6 +166,13 @@ onMounted(loadData);
       <div v-if="loading" class="loading-state">
         <Car :size="32" class="anim-pulse text-brand" />
         <p>Chargement des marques partenaires...</p>
+      </div>
+
+      <div v-else-if="errorMsg" class="error-banner" role="alert">
+        <p>{{ errorMsg }}</p>
+        <button type="button" class="btn btn-sm btn-outline" @click="loadData">
+          Réessayer
+        </button>
       </div>
 
       <!-- Grille des marques -->
@@ -189,7 +209,11 @@ onMounted(loadData);
               <Car :size="16" class="stock-icon" />
               <span>
                 <strong>{{ getCarCount(b.name) }}</strong>
-                {{ getCarCount(b.name) > 1 ? "véhicules au catalogue" : "véhicule au catalogue" }}
+                {{
+                  getCarCount(b.name) > 1
+                    ? "véhicules au catalogue"
+                    : "véhicule au catalogue"
+                }}
               </span>
             </div>
 
@@ -210,7 +234,8 @@ onMounted(loadData);
         <Tag :size="36" class="text-slate" />
         <h3>Aucun constructeur trouvé pour "{{ searchQuery }}"</h3>
         <p>
-          Nous pouvons importer n'importe quel véhicule d'un constructeur chinois sur demande spécifique.
+          Nous pouvons importer n'importe quel véhicule d'un constructeur
+          chinois sur demande spécifique.
         </p>
         <button class="btn btn-secondary btn-sm" @click="searchQuery = ''">
           Réinitialiser la recherche
@@ -223,7 +248,9 @@ onMounted(loadData);
           <span class="section-tag">Analyse du Marché</span>
           <h2>Pourquoi Choisir un Véhicule Chinois en Côte d'Ivoire ?</h2>
           <p class="section-desc">
-            En moins d'une décennie, les marques chinoises ont révolutionné le paysage automobile mondial par leur avance technologique et leur compétitivité.
+            En moins d'une décennie, les marques chinoises ont révolutionné le
+            paysage automobile mondial par leur avance technologique et leur
+            compétitivité.
           </p>
         </div>
 
@@ -234,7 +261,9 @@ onMounted(loadData);
             </div>
             <h3>Technologies Embarquées Supérieures</h3>
             <p>
-              Écrans géants rotatifs, caméras 360° panoramiques, aides à la conduite autonome de niveau 2+, connectivité Apple CarPlay et Android Auto incluses d'origine.
+              Écrans géants rotatifs, caméras 360° panoramiques, aides à la
+              conduite autonome de niveau 2+, connectivité Apple CarPlay et
+              Android Auto incluses d'origine.
             </p>
           </div>
 
@@ -244,7 +273,9 @@ onMounted(loadData);
             </div>
             <h3>Rapport Qualité / Équipement Inégalé</h3>
             <p>
-              Pour le tarif d'un véhicule d'occasion européen basique, accédez à un SUV flambant neuf, suréquipé, garanti et bénéficiant des dernières normes de sécurité Euro NCAP.
+              Pour le tarif d'un véhicule d'occasion européen basique, accédez à
+              un SUV flambant neuf, suréquipé, garanti et bénéficiant des
+              dernières normes de sécurité Euro NCAP.
             </p>
           </div>
 
@@ -254,27 +285,35 @@ onMounted(loadData);
             </div>
             <h3>Adaptabilité aux Routes Ivoiriennes</h3>
             <p>
-              Garde au sol surélevée, suspensions renforcées, climatisation tropicalisée de haute capacité et moteurs éprouvés compatibles avec les carburants locaux.
+              Garde au sol surélevée, suspensions renforcées, climatisation
+              tropicalisée de haute capacité et moteurs éprouvés compatibles
+              avec les carburants locaux.
             </p>
           </div>
         </div>
 
-        <!-- Bannière Demande Sur-Mesure -->
+        <!-- Bannière Demande d'informations -->
         <div class="custom-request-banner">
           <div class="banner-text">
             <h3>Vous recherchez une marque ou un modèle spécifique ?</h3>
             <p>
-              Zeekr, Voyah, Tank, Lynk & Co, Leapmotor... Nous traitons toutes les commandes d'importation personnalisées directement auprès des concessionnaires agréés en Chine.
+              Découvrez les marques et les modèles présentés par China
+              Automobile, puis contactez-nous pour obtenir les informations
+              commerciales disponibles.
             </p>
           </div>
           <a
-            :href="site.waLink('Bonjour, je recherche un modèle de véhicule chinois particulier qui n\'est pas encore au catalogue.')"
+            :href="
+              site.waLink(
+                'Bonjour, je recherche un modèle de véhicule chinois particulier qui n\'est pas encore au catalogue.',
+              )
+            "
             target="_blank"
             rel="noopener"
             class="btn btn-whatsapp"
           >
             <MessageCircle :size="18" />
-            <span>Faire une demande sur-mesure</span>
+            <span>Demander des informations</span>
           </a>
         </div>
       </section>
