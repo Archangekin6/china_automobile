@@ -108,7 +108,7 @@ onMounted(loadHomeData);
         <div class="hero-content">
           <div class="hero-badge">
             <span class="hero-badge-pill">Vente automobile</span>
-            <span class="hero-badge-text">Constructeurs Chinois • Abidjan</span>
+            <span class="hero-badge-text">Véhicules proposés • Abidjan</span>
           </div>
 
           <h1 class="hero-title">{{ s.hero_title }}</h1>
@@ -250,9 +250,8 @@ onMounted(loadHomeData);
           <div class="section-tag">Constructeurs Partenaires</div>
           <h2 class="section-title">{{ s.brands_title }}</h2>
           <p class="section-sub max-w-ch">
-            Nous travaillons avec les plus grands constructeurs automobiles
-            chinois pour vous garantir fiabilité, disponibilité des pièces et
-            meilleur rapport qualité/prix.
+            Consultez les marques enregistrées dans notre catalogue et les
+            véhicules qui leur sont associés.
           </p>
         </div>
 
@@ -372,19 +371,16 @@ onMounted(loadHomeData);
         <div class="about-text">
           <div class="section-tag">Qui sommes-nous ?</div>
           <h2 class="section-title">
-            China Automobile, votre pont direct avec l'industrie automobile
-            chinoise
+            China Automobile, votre partenaire automobile à Abidjan
           </h2>
           <p class="about-lead">
-            L'industrie automobile chinoise s'est imposée comme le leader
-            mondial de la mobilité moderne, des SUV technologiques et des
-            motorisations efficientes.
+            China Automobile vous aide à découvrir des véhicules et à comparer
+            les informations disponibles avant votre achat.
           </p>
           <p class="about-body">
             Basé à Abidjan, <strong>China Automobile</strong> a été créé pour
-            offrir aux automobilistes et professionnels ivoiriens un accès
-            fiable, transparent et sécurisé aux modèles les plus demandés des
-            constructeurs tels que BYD, Chery, Haval, Geely et Changan.
+            offrir aux automobilistes et professionnels ivoiriens une
+            présentation claire des véhicules présents dans son catalogue.
           </p>
           <div class="about-checklist">
             <div class="check-entry">

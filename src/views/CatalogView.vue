@@ -141,8 +141,8 @@ onMounted(() => {
         </div>
         <h1 class="catalog-title">Notre Parc de Véhicules</h1>
         <p class="catalog-desc">
-          Découvrez notre sélection de véhicules chinois neufs et d'occasion
-          certifiée, avec leur prix et leur statut lorsqu'ils sont disponibles.
+          Découvrez notre sélection de véhicules neufs et d'occasion, avec leur
+          prix et leur statut lorsqu'ils sont disponibles.
         </p>
       </div>
     </header>

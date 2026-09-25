@@ -24,49 +24,6 @@ const loading = ref(true);
 const errorMsg = ref("");
 const searchQuery = ref("");
 
-// Données descriptives enrichies pour les constructeurs chinois majeurs
-const brandMeta = {
-  byd: {
-    origin: "Shenzhen, Chine",
-    specialty:
-      "Leader mondial des véhicules électriques & hybrides rechargeables",
-    badge: "Mobilité Électrique",
-    desc: "BYD (Build Your Dreams) est le numéro 1 mondial des véhicules à énergie nouvelle. Leurs SUV (Atto 3, Song Plus, Tang) et berlines (Seal, Han) intègrent la célèbre batterie Blade ultrarécurisée.",
-  },
-  chery: {
-    origin: "Wuhu, Chine",
-    specialty: "SUV technologiques & motorisations robustes",
-    badge: "Fiabilité Reconnue",
-    desc: "Premier exportateur automobile chinois depuis plus de 20 ans. La gamme Tiggo (Tiggo 4, 7, 8 Pro) offre un niveau d'équipement et de confort exceptionnel adapté aux routes ouest-africaines.",
-  },
-  haval: {
-    origin: "Baoding, Chine",
-    specialty:
-      "Spécialiste mondial des SUV & 4x4 tout-terrain (Great Wall Motors)",
-    badge: "Leader SUV",
-    desc: "Marque premium du géant Great Wall Motor dédiée exclusivement aux SUV. Le Haval H6 est l'un des SUV les plus vendus au monde, réputé pour sa robustesse et sa sécurité active.",
-  },
-  geely: {
-    origin: "Hangzhou, Chine",
-    specialty:
-      "Design scandinave & technologies de pointe (Propriétaire de Volvo)",
-    badge: "Ingénierie Globale",
-    desc: "Maison mère de Volvo Cars, Zeekr et Polestar. Les modèles Geely (Coolray, Tugella, Monjaro) bénéficient des plateformes châssis et des standards de sécurité européens.",
-  },
-  changan: {
-    origin: "Chongqing, Chine",
-    specialty: "Design futuriste & moteurs BlueCore efficients",
-    badge: "Technologie Avancée",
-    desc: "L'un des plus anciens et prestigieux constructeurs de Chine. La série UNI (UNI-T, UNI-K, CS55 Plus) séduit par son style avant-gardiste et ses motorisations performantes.",
-  },
-  jetour: {
-    origin: "Wuhu, Chine",
-    specialty: "SUV baroudeurs & voyages longue distance",
-    badge: "Aventure & Espace",
-    desc: "Filiale dynamique du groupe Chery dédiée aux SUV spacieux et modernes, notamment la série Dashing et T2 au design affirmé.",
-  },
-};
-
 async function loadData() {
   loading.value = true;
   errorMsg.value = "";
@@ -98,19 +55,6 @@ function getCarCount(brandName) {
   ).length;
 }
 
-function getMeta(brandName) {
-  if (!brandName) return null;
-  const key = brandName.toLowerCase().trim();
-  return (
-    brandMeta[key] || {
-      origin: "Chine",
-      specialty: "Véhicules thermiques, hybrides et électriques",
-      badge: "Constructeur Chinois",
-      desc: "Constructeur de premier plan combinant innovations technologiques, confort moderne et excellent rapport qualité/prix.",
-    }
-  );
-}
-
 const filteredBrands = computed(() => {
   if (!searchQuery.value.trim()) return brands.value;
   const q = searchQuery.value.trim().toLowerCase();
@@ -140,12 +84,10 @@ onMounted(loadData);
             <Tag :size="14" />
             <span>Constructeurs Automobiles</span>
           </div>
-          <h1 class="page-title">Les Grandes Marques Automobiles Chinoises</h1>
+          <h1 class="page-title">Les Marques Automobiles Proposées</h1>
           <p class="page-lead">
-            China Automobile sélectionne pour vous les fleurons de l'industrie
-            automobile de Chine. Découvrez leurs gammes de SUV, berlines et
-            véhicules électriques proposés par China Automobile en Côte
-            d'Ivoire.
+            Découvrez les marques et les modèles présents dans le catalogue de
+            China Automobile en Côte d'Ivoire.
           </p>
 
           <!-- Barre de recherche de constructeur -->
@@ -196,13 +138,9 @@ onMounted(loadData);
             </div>
 
             <div class="brand-identifiers">
-              <span class="brand-badge">{{ getMeta(b.name).badge }}</span>
               <h2 class="brand-name">{{ b.name }}</h2>
-              <span class="brand-origin">{{ getMeta(b.name).origin }}</span>
             </div>
           </div>
-
-          <p class="brand-description">{{ getMeta(b.name).desc }}</p>
 
           <div class="card-bottom">
             <div class="stock-indicator">
@@ -233,24 +171,20 @@ onMounted(loadData);
       <div v-else class="empty-search-state">
         <Tag :size="36" class="text-slate" />
         <h3>Aucun constructeur trouvé pour "{{ searchQuery }}"</h3>
-        <p>
-          Nous pouvons importer n'importe quel véhicule d'un constructeur
-          chinois sur demande spécifique.
-        </p>
+        <p>Aucune marque ne correspond à votre recherche dans le catalogue.</p>
         <button class="btn btn-secondary btn-sm" @click="searchQuery = ''">
           Réinitialiser la recherche
         </button>
       </div>
 
-      <!-- Section Explicative : Pourquoi les véhicules chinois ? -->
+      <!-- Section Explicative -->
       <section class="reasons-section">
         <div class="reasons-header">
           <span class="section-tag">Analyse du Marché</span>
-          <h2>Pourquoi Choisir un Véhicule Chinois en Côte d'Ivoire ?</h2>
+          <h2>Pourquoi consulter notre catalogue automobile ?</h2>
           <p class="section-desc">
-            En moins d'une décennie, les marques chinoises ont révolutionné le
-            paysage automobile mondial par leur avance technologique et leur
-            compétitivité.
+            Comparez les modèles présents dans notre catalogue et consultez les
+            informations disponibles avant de contacter notre équipe.
           </p>
         </div>
 
@@ -305,7 +239,7 @@ onMounted(loadData);
           <a
             :href="
               site.waLink(
-                'Bonjour, je recherche un modèle de véhicule chinois particulier qui n\'est pas encore au catalogue.',
+                'Bonjour, je souhaite obtenir des informations sur une marque ou un modèle présent dans votre catalogue.',
               )
             "
             target="_blank"

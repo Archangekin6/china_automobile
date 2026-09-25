@@ -84,8 +84,8 @@ const isAdmin = computed(() => route.meta.admin === true);
               <span class="brand-title">CHINA AUTOMOBILE</span>
             </div>
             <p class="brand-desc">
-              Votre partenaire automobile pour découvrir et acheter des
-              véhicules de marques chinoises en Côte d'Ivoire.
+              Votre partenaire automobile pour découvrir et acheter les
+              véhicules proposés en Côte d'Ivoire.
             </p>
             <div class="badges-row">
               <span class="country-badge">Abidjan, Côte d'Ivoire</span>

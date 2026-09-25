@@ -53,9 +53,8 @@ Pouvez-vous me proposer les options correspondantes ?`;
         </div>
         <h1 class="page-title">Nos Véhicules et Informations Commerciales</h1>
         <p class="page-lead">
-          Découvrez les véhicules de marques chinoises proposés en Côte
-          d'Ivoire, consultez leurs informations et échangez directement avec
-          notre équipe.
+          Découvrez les véhicules proposés en Côte d'Ivoire, consultez leurs
+          informations et échangez directement avec notre équipe.
         </p>
       </div>
     </header>
@@ -111,8 +110,8 @@ Pouvez-vous me proposer les options correspondantes ?`;
             </p>
             <ul class="service-perks">
               <li>
-                <CheckCircle2 :size="15" class="perk-icon" /> Marques chinoises
-                présentées clairement
+                <CheckCircle2 :size="15" class="perk-icon" /> Marques présentes
+                au catalogue
               </li>
               <li>
                 <CheckCircle2 :size="15" class="perk-icon" /> Informations
@@ -342,7 +341,7 @@ Pouvez-vous me proposer les options correspondantes ?`;
                 <option value="Geely">Geely (Technologie groupe Volvo)</option>
                 <option value="Changan">Changan (Design & confort)</option>
                 <option value="Autre constructeur">
-                  Autre constructeur chinois
+                  Autre marque ou modèle
                 </option>
               </select>
             </div>

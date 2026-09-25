@@ -51,25 +51,22 @@ const site = useSiteStore();
         <div class="story-grid">
           <div class="story-content">
             <span class="section-tag">Notre Histoire</span>
-            <h2>Pionniers de la Mobilité Chinoise Moderne en Côte d'Ivoire</h2>
+            <h2>Une présentation automobile claire en Côte d'Ivoire</h2>
             <p class="lead-text">
-              L'industrie automobile a connu un basculement historique.
-              Aujourd'hui, les constructeurs chinois conçoivent les véhicules
-              les plus technologiquement avancés, les plus sécurisés et les plus
-              efficients du marché mondial.
+              Le marché automobile propose des modèles aux caractéristiques et
+              aux équipements variés. Notre rôle est de les présenter clairement
+              aux acheteurs en Côte d'Ivoire.
             </p>
             <p>
-              Face à ce constat, <strong>China Automobile</strong> a été fondée
-              avec une mission claire : démocratiser l'accès aux véhicules neufs
-              et occasions récentes haut de gamme des constructeurs chinois de
-              référence (BYD, Chery, Haval, Geely, Changan, Jetour) pour les
+              <strong>China Automobile</strong> a été fondée avec une mission
+              claire : présenter des véhicules neufs et d'occasion aux
               automobilistes et professionnels ivoiriens.
             </p>
             <p>
-              Basée à Abidjan, China Automobile présente les véhicules de
-              marques chinoises proposés en Côte d'Ivoire avec des informations
-              claires sur leurs caractéristiques, leurs prix lorsqu'ils sont
-              disponibles et leur statut commercial.
+              Basée à Abidjan, China Automobile présente les véhicules proposés
+              en Côte d'Ivoire avec des informations claires sur leurs
+              caractéristiques, leurs prix lorsqu'ils sont disponibles et leur
+              statut commercial.
             </p>
           </div>
 

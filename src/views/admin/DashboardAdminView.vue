@@ -39,7 +39,9 @@ const formatDate = (d) => {
 
 // Métriques
 const totalCars = computed(() => cars.value.length);
-const availableCars = computed(() => cars.value.filter((c) => c.available).length);
+const availableCars = computed(
+  () => cars.value.filter((c) => c.available).length,
+);
 const soldCars = computed(() => cars.value.filter((c) => !c.available).length);
 const pendingOrders = computed(
   () => orders.value.filter((o) => o.status === "nouveau" || !o.status).length,
@@ -54,10 +56,30 @@ const fuelBreakdown = computed(() => {
   }
   const total = totalCars.value || 1;
   return [
-    { label: "Essence", count: totals.Essence, pct: Math.round((totals.Essence / total) * 100), color: "#dc2626" },
-    { label: "Hybride", count: totals.Hybride, pct: Math.round((totals.Hybride / total) * 100), color: "#059669" },
-    { label: "Électrique", count: totals.Électrique, pct: Math.round((totals.Électrique / total) * 100), color: "#2563eb" },
-    { label: "Diesel", count: totals.Diesel, pct: Math.round((totals.Diesel / total) * 100), color: "#6b7280" },
+    {
+      label: "Essence",
+      count: totals.Essence,
+      pct: Math.round((totals.Essence / total) * 100),
+      color: "#dc2626",
+    },
+    {
+      label: "Hybride",
+      count: totals.Hybride,
+      pct: Math.round((totals.Hybride / total) * 100),
+      color: "#059669",
+    },
+    {
+      label: "Électrique",
+      count: totals.Électrique,
+      pct: Math.round((totals.Électrique / total) * 100),
+      color: "#2563eb",
+    },
+    {
+      label: "Diesel",
+      count: totals.Diesel,
+      pct: Math.round((totals.Diesel / total) * 100),
+      color: "#6b7280",
+    },
   ];
 });
 
@@ -71,8 +93,14 @@ async function loadDashboardData() {
   loading.value = true;
   try {
     const [cRes, oRes, bRes] = await Promise.all([
-      supabase.from("cars").select("*").order("created_at", { ascending: false }),
-      supabase.from("orders").select("*, cars(brand, model)").order("created_at", { ascending: false }),
+      supabase
+        .from("cars")
+        .select("*")
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("orders")
+        .select("*, cars(brand, model)")
+        .order("created_at", { ascending: false }),
       supabase.from("brands").select("*"),
     ]);
 
@@ -113,7 +141,9 @@ onMounted(loadDashboardData);
         <div class="kpi-content">
           <span class="kpi-label">Demandes à Traiter</span>
           <strong class="kpi-val">{{ pendingOrders }}</strong>
-          <span class="kpi-sub">Sur {{ orders.length }} demandes enregistrées</span>
+          <span class="kpi-sub"
+            >Sur {{ orders.length }} demandes enregistrées</span
+          >
         </div>
       </div>
 
@@ -137,7 +167,7 @@ onMounted(loadDashboardData);
         <div class="kpi-content">
           <span class="kpi-label">Constructeurs Partenaires</span>
           <strong class="kpi-val">{{ brands.length }}</strong>
-          <span class="kpi-sub">Marques chinoises actives</span>
+          <span class="kpi-sub">Marques enregistrées</span>
         </div>
       </div>
     </div>
@@ -173,7 +203,9 @@ onMounted(loadDashboardData);
         <div class="dash-card-header">
           <div>
             <h3>Dernières Demandes d'Achat & Import</h3>
-            <p>Demandes soumises récemment par les clients sur le site vitrine.</p>
+            <p>
+              Demandes soumises récemment par les clients sur le site vitrine.
+            </p>
           </div>
           <RouterLink to="/admin/commandes" class="see-all-link">
             <span>Toutes les commandes</span>
@@ -191,7 +223,9 @@ onMounted(loadDashboardData);
             <div class="order-client-info">
               <strong class="client-name">{{ o.customer_name }}</strong>
               <div class="client-phone-wrap">
-                <a :href="`tel:${o.phone}`" class="client-phone">{{ o.phone }}</a>
+                <a :href="`tel:${o.phone}`" class="client-phone">{{
+                  o.phone
+                }}</a>
                 <a
                   :href="`https://wa.me/${o.phone.replace(/\\D/g, '')}`"
                   target="_blank"
@@ -205,7 +239,9 @@ onMounted(loadDashboardData);
             </div>
 
             <div class="order-car-info">
-              <span class="car-label" v-if="o.cars">{{ o.cars.brand }} {{ o.cars.model }}</span>
+              <span class="car-label" v-if="o.cars"
+                >{{ o.cars.brand }} {{ o.cars.model }}</span
+              >
               <span class="car-label text-slate" v-else>Demande générale</span>
               <span class="order-date">{{ formatDate(o.created_at) }}</span>
             </div>
@@ -231,7 +267,11 @@ onMounted(loadDashboardData);
           </div>
 
           <div class="fuel-distribution-list">
-            <div v-for="f in fuelBreakdown" :key="f.label" class="fuel-dist-item">
+            <div
+              v-for="f in fuelBreakdown"
+              :key="f.label"
+              class="fuel-dist-item"
+            >
               <div class="dist-row">
                 <span class="dist-label">{{ f.label }}</span>
                 <span class="dist-val">{{ f.count }} véh. ({{ f.pct }}%)</span>
@@ -260,20 +300,33 @@ onMounted(loadDashboardData);
           </div>
 
           <div class="recent-cars-list">
-            <div v-for="car in recentCars" :key="car.id" class="recent-car-item">
+            <div
+              v-for="car in recentCars"
+              :key="car.id"
+              class="recent-car-item"
+            >
               <div class="car-mini-thumb">
-                <img v-if="car.image_url" :src="car.image_url" :alt="car.model" />
+                <img
+                  v-if="car.image_url"
+                  :src="car.image_url"
+                  :alt="car.model"
+                />
                 <Car v-else :size="16" class="thumb-icon" />
               </div>
 
               <div class="car-mini-details">
                 <span class="car-brand-name">{{ car.brand }}</span>
-                <strong class="car-model-name">{{ car.model }} {{ car.year || "" }}</strong>
+                <strong class="car-model-name"
+                  >{{ car.model }} {{ car.year || "" }}</strong
+                >
               </div>
 
               <div class="car-mini-price">
                 <span class="price-amount">{{ formatPrice(car.price) }}</span>
-                <span class="status-dot" :class="car.available ? 'available' : 'sold'">
+                <span
+                  class="status-dot"
+                  :class="car.available ? 'available' : 'sold'"
+                >
                   {{ car.available ? "Dispo" : "Vendu" }}
                 </span>
               </div>
