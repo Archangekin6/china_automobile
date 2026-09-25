@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { supabase } from "@/lib/supabase";
 
 export const defaultSettings = {
+  company_logo_url: "",
   phone: "",
   whatsapp: "", // sans + ni espaces
   address: "Abidjan, Côte d'Ivoire",

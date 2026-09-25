@@ -24,6 +24,8 @@ const site = useSiteStore();
 
 // Copie profonde du store pour le formulaire
 const form = ref(JSON.parse(JSON.stringify(site.settings)));
+const companyLogoFile = ref(null);
+const companyLogoPreview = ref(form.value.company_logo_url || "");
 const heroFile = ref(null);
 const heroPreview = ref(form.value.hero_image || "");
 const saving = ref(false);
@@ -38,11 +40,27 @@ function onHeroFileChange(e) {
   }
 }
 
+function onCompanyLogoFileChange(e) {
+  const f = e.target.files[0] || null;
+  companyLogoFile.value = f;
+  if (f) {
+    companyLogoPreview.value = URL.createObjectURL(f);
+  }
+}
+
 async function save() {
   message.value = "";
   error.value = "";
   saving.value = true;
   try {
+    if (companyLogoFile.value) {
+      form.value.company_logo_url = await uploadImage(
+        companyLogoFile.value,
+        "company",
+      );
+      companyLogoFile.value = null;
+    }
+
     if (heroFile.value) {
       form.value.hero_image = await uploadImage(heroFile.value, "site");
       heroFile.value = null;
@@ -135,7 +153,58 @@ async function save() {
       </div>
     </section>
 
-    <!-- Section 2 : Bandeau d'Accueil (Hero) -->
+    <!-- Section 2 : Logo officiel -->
+    <section class="admin-card-section">
+      <div class="card-section-head">
+        <div class="head-icon-wrap">
+          <ImageIcon :size="18" />
+        </div>
+        <div>
+          <h3>Logo officiel de China Automobile</h3>
+          <p>
+            Ce logo sera utilisé dans le header et le footer de la vitrine
+            publique.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-section-body">
+        <div class="company-logo-config">
+          <div class="company-logo-preview-frame">
+            <img
+              v-if="companyLogoPreview"
+              :src="companyLogoPreview"
+              alt="Aperçu du logo de China Automobile"
+              class="company-logo-preview"
+            />
+            <div v-else class="company-logo-empty">
+              <ImageIcon :size="30" />
+              <span>Aucun logo configuré</span>
+            </div>
+          </div>
+
+          <div class="company-logo-upload-col">
+            <label class="form-label">Logo actuel / nouveau logo</label>
+            <label class="btn btn-secondary btn-sm upload-btn">
+              <Upload :size="15" />
+              <span>Choisir le logo officiel</span>
+              <input
+                type="file"
+                accept="image/*"
+                class="hidden-file-input"
+                @change="onCompanyLogoFileChange"
+              />
+            </label>
+            <span class="field-hint">
+              Format PNG ou SVG recommandé, avec fond transparent si nécessaire.
+              Le changement est appliqué après l'enregistrement.
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 : Bandeau d'Accueil (Hero) -->
     <section class="admin-card-section">
       <div class="card-section-head">
         <div class="head-icon-wrap">
@@ -202,7 +271,7 @@ async function save() {
       </div>
     </section>
 
-    <!-- Section 3 : Modules de la Vitrine -->
+    <!-- Section 4 : Modules de la Vitrine -->
     <section class="admin-card-section">
       <div class="card-section-head">
         <div class="head-icon-wrap">
@@ -360,7 +429,7 @@ async function save() {
       </div>
     </section>
 
-    <!-- Section 4 : Parcours d'achat (Étapes) -->
+    <!-- Section 5 : Parcours d'achat (Étapes) -->
     <section class="admin-card-section">
       <div class="card-section-head">
         <div class="head-icon-wrap">
@@ -507,6 +576,45 @@ async function save() {
 }
 
 /* Hero photo config */
+.company-logo-config {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.company-logo-preview-frame {
+  min-height: 120px;
+  padding: 1rem;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-slate-900);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-slate-300);
+}
+
+.company-logo-preview {
+  display: block;
+  max-width: 100%;
+  max-height: 96px;
+  object-fit: contain;
+}
+
+.company-logo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-slate-400);
+  font-size: 0.78rem;
+}
+
+.company-logo-upload-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
 .hero-photo-config {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -695,6 +803,10 @@ async function save() {
 }
 
 @media (max-width: 900px) {
+  .company-logo-config {
+    grid-template-columns: 1fr;
+  }
+
   .sticky-savebar {
     left: 0;
     padding: 1rem 1.25rem;

@@ -54,7 +54,13 @@ onUnmounted(() => {
       <div class="container bar">
         <!-- Logo de marque -->
         <RouterLink to="/" class="logo" @click="closeMenu">
-          <div class="logo-symbol" aria-hidden="true">
+          <img
+            v-if="site.settings.company_logo_url"
+            :src="site.settings.company_logo_url"
+            alt="China Automobile"
+            class="company-logo-image"
+          />
+          <div v-else class="logo-symbol" aria-hidden="true">
             <span class="symbol-slash slash-1"></span>
             <span class="symbol-slash slash-2"></span>
           </div>
@@ -176,7 +182,13 @@ onUnmounted(() => {
       >
         <div class="drawer-header">
           <div class="logo">
-            <div class="logo-symbol" aria-hidden="true">
+            <img
+              v-if="site.settings.company_logo_url"
+              :src="site.settings.company_logo_url"
+              alt="China Automobile"
+              class="company-logo-image"
+            />
+            <div v-else class="logo-symbol" aria-hidden="true">
               <span class="symbol-slash slash-1"></span>
               <span class="symbol-slash slash-2"></span>
             </div>
@@ -381,6 +393,14 @@ onUnmounted(() => {
   align-items: center;
   gap: 3px;
   height: 28px;
+}
+
+.company-logo-image {
+  display: block;
+  width: 46px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .symbol-slash {
